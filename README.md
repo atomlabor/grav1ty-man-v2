@@ -1,11 +1,11 @@
-# grav1ty-man-v2
+# grav1ty-man
 
-Ein innovatives 2D-Plattformspiel für das Rabbit R1-System mit einzigartiger Sensorsteuerung.
+Ein innovatives 2D-Plattformspiel für das Rabbit r1-System mit einzigartiger Sensorsteuerung.
 
 ## 🚀 Features
 
 - **Canvas-only Rendering** (240x282 Auflösung)
-- **Rabbit R1 Sensorsteuerung** - Intuitive Bewegungssteuerung über Gerätesensoren
+- **Rabbit r1 Sensorsteuerung** - Intuitive Bewegungssteuerung über Gerätesensoren
 - **Vollständiges Grafikpaket** - Hochwertige Pixel-Art-Assets
 - **Optimierte Performance** - Speziell für Rabbit Hardware entwickelt
 - **Immersive Soundkulisse** - Atmosphärische Musikuntermalung
@@ -13,7 +13,7 @@ Ein innovatives 2D-Plattformspiel für das Rabbit R1-System mit einzigartiger Se
 ## 🎮 Spielanleitung
 
 **Steuerung:**
-- Nutze die Rabbit R1 Sensoren zur Bewegung des Charakters
+- Nutze die Rabbit r1 gyro Sensoren zur Bewegung des Charakters
 - Sammle Gegenstände und überwinde Hindernisse
 - Erreiche das Ziel in jedem Level
 
@@ -25,13 +25,13 @@ Ein innovatives 2D-Plattformspiel für das Rabbit R1-System mit einzigartiger Se
 
 ## 🔧 Entwickler
 
-Entwickelt und umgesetzt von [Atomlabor](https://atomlabor.de) - Spezialisiert auf innovative Gaming-Lösungen für moderne Hardware.
+Entwickelt und umgesetzt von [Atomlabor](https://atomlabor.de).
 
 ---
 
-# grav1ty-man-v2 (English)
+# grav1ty-man (English)
 
-An innovative 2D platform game for the Rabbit R1 system featuring unique sensor controls.
+An innovative 2D platform game for the Rabbitr1 system featuring unique sensor controls.
 
 ## 🚀 Features
 
@@ -44,7 +44,7 @@ An innovative 2D platform game for the Rabbit R1 system featuring unique sensor 
 ## 🎮 Instructions
 
 **Controls:**
-- Use Rabbit R1 sensors to move your character
+- Use Rabbit r1 gyro sensors to move your character
 - Collect items and overcome obstacles
 - Reach the goal in each level
 
@@ -56,4 +56,4 @@ An innovative 2D platform game for the Rabbit R1 system featuring unique sensor 
 
 ## 🔧 Developer
 
-Developed and implemented by [Atomlabor](https://atomlabor.de) - Specialized in innovative gaming solutions for modern hardware.
+Developed and implemented by [Atomlabor](https://atomlabor.de).
