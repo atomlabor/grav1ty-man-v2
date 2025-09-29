@@ -1,3 +1,5 @@
+![Titelbild](https://github.com/atomlabor/grav1ty-man-v2/blob/main/grav1ty-man-intro.webp)
+
 # grav1ty-man
 Ein innovatives 2D-Plattformspiel für das Rabbit r1-System mit einzigartiger Sensorsteuerung.
 
@@ -18,6 +20,11 @@ Ein Astronaut musste nach einem schweren Defekt seines Raumschiffs auf einer Rau
 - Erreiche das Ziel in jedem Level
 
 **Ziel:** Navigiere als Grav1ty Man durch die Welten und meistere alle Herausforderungen!
+
+## 📱 QR-Code für Rabbit R1
+![QR Code](https://github.com/atomlabor/grav1ty-man-v2/blob/main/2.png)
+
+Scanne diesen QR-Code auf deinem Rabbit R1, um direkt zum Spiel zu gelangen!
 
 ## 🌐 Demo
 **Spielbar unter:** [https://atomlabor.github.io/grav1ty-man-v2/](https://atomlabor.github.io/grav1ty-man-v2/)
@@ -47,6 +54,11 @@ A stranded astronaut is forced to make an emergency landing on a space station b
 - Reach the goal in each level
 
 **Objective:** Navigate as Grav1ty Man through worlds and master all challenges!
+
+## 📱 QR Code for Rabbit R1
+![QR Code](https://github.com/atomlabor/grav1ty-man-v2/blob/main/2.png)
+
+Scan this QR code on your Rabbit R1 to go directly to the game!
 
 ## 🌐 Demo
 **Play at:** [https://atomlabor.github.io/grav1ty-man-v2/](https://atomlabor.github.io/grav1ty-man-v2/)
