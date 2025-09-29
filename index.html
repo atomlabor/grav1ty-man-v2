@@ -292,13 +292,13 @@
    // Assets and Audio
    const assets = {};
    const assetUrls = {
-       player: 'https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/grav1tyman-player.png',
-       background: 'https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/spaceship-bg.png',
-       enemy: 'https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/dalek.png',
-       item: 'https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/keycard.png',
-       exit: 'https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/exit.png',
-       splash: 'https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/grav1tyman-splash.png',
-       end: 'https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/endscreen.png'
+       player: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-player.png',
+       background: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/spaceship-bg.png',
+       enemy: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/dalek.png',
+       item: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/keycard.png',
+       exit: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/exit.png',
+       splash: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-splash.png',
+       end: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/endscreen.png'
    };
    let audioContext, oscillator;
    let gameMusic;
@@ -379,8 +379,8 @@
                [0, 84, 110, TILE_SIZE], [130, 84, 110, TILE_SIZE],
               
                // Small platforms at the very top for item placement
-               [50, 4, 30, TILE_SIZE],
-               [160, 4, 30, TILE_SIZE],
+               [50, -4, 30, TILE_SIZE],
+               [160, -4, 30, TILE_SIZE],
            ],
            items: [
                { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false }, // Floor
@@ -472,7 +472,6 @@
        const totalAssets = Object.keys(assetUrls).length;
        let loadedCount = 0;
       
-       // Retrieve SVG elements for easier manipulation
        soundWaves = document.getElementById('sound-waves');
        muteSlash = document.getElementById('mute-slash');
       
@@ -491,7 +490,7 @@
                splashScreen.classList.remove('hidden');
                gameState = 'splash';
               
-               // Set the initial music icon state based on isMusicMuted
+            
                if (isMusicMuted) {
                    soundWaves.style.display = 'none';
                    muteSlash.style.display = 'block';
@@ -866,11 +865,10 @@
        updateHUD(itemsCollected);
 
 
-       // 4. Enemy Update and Collision
+       // 4. Enemy Update and Collision and Gyro Upspeed
        level.enemies.forEach(enemy => {
            if (!enemy.isVertical) {
-               // Gyro-Einfluss: Die horizontalen Gegner bewegen sich nun stärker
-               // basierend auf der Neigung des R1-Geräts, um eine zusätzliche Herausforderung zu schaffen.
+
                const effectiveDx = enemy.dx + (gyroTilt * ENEMY_GYRO_INFLUENCE);
                enemy.x += effectiveDx * dt * 1.5;
               
@@ -982,7 +980,7 @@
            });
 
 
-           // 5. Exit Gate (NEW: Added glow when open)
+           // 5. Exit Gate 
            if (assets.exit) {
                const y = level.exit.y;
                const gateHeight = TILE_SIZE * 2;
@@ -1000,13 +998,12 @@
                        ctx.drawImage(assets.exit, level.exit.x, y, TILE_SIZE, gateHeight);
                    }
                   
-                   // Add a semi-transparent green overlay for strong visual feedback
+                   
                    ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
                    ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
                   
                } else {
-                   // Regular drawing when closed
-                   ctx.shadowBlur = 0; // Ensure no shadow when closed
+                   ctx.shadowBlur = 0; 
                    if (assets.exit.isFallback) {
                        ctx.fillStyle = 'gray';
                        ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
@@ -1015,7 +1012,7 @@
                    }
                }
               
-               // Reset shadow after drawing the exit
+           
                ctx.shadowBlur = 0;
            }
           
@@ -1061,7 +1058,7 @@
        if (obj.isDead) return;
        obj.isDead = true;
       
-       handleMusicPause(); // Pause music on game over (regardless of mute state)
+       handleMusicPause(); 
 
 
        if (type === 'enemy' || type === 'boundary') {
@@ -1092,7 +1089,7 @@
    }
 
 
-   // Start game from splash screen
+ 
    function startGame() {
        if (gameState !== 'splash') return;
       
@@ -1100,18 +1097,18 @@
            audioContext.resume();
        }
       
-       // Start background music (if not muted)
+     
        if (gameMusic && !isMusicMuted) {
            gameMusic.volume = 0.6;
            gameMusic.play().catch(e => console.warn('Audio playback failed.'));
        }
       
-       // HIDE SPLASH SCREEN
+
        splashScreen.classList.add('hidden');
        gameState = 'playing';
        loadLevel(0);
       
-       // Ensure game loop is running
+
        if (!gameLoopRunning) {
            gameLoopRunning = true;
            lastTime = performance.now();
@@ -1126,8 +1123,6 @@
    }
   
    // --- CONTROL LOGIC: TOUCH/CLICK/KEYBOARD ---
-
-
    // Function to handle click and touch identically (for gravity flip)
    function flipGravity(event) {
        if (gameState !== 'playing' || player.isDead) return;
@@ -1141,7 +1136,6 @@
            tapY = event.clientY;
        }
       
-       // Only flip if the tap/click is on the game area
        if (tapY >= HUD_HEIGHT) {
            player.isGravityUp = !player.isGravityUp;
            player.velY = 0;
@@ -1152,15 +1146,13 @@
 
 
    // Gyroscope Logic (Horizontal Movement)
-   // DIESE FUNKTION EMPFÄNGT DIE DATEN DES R1 GYROSKOPS ÜBER DIE STANDARD WEB-API.
    function handleGyro(event) {
        if (gameState !== 'playing') return;
 
 
-       // 'gamma' ist die Neigung des Geräts um die X-Achse (links/rechts-Neigung).
+  
        let gamma = event.gamma;
       
-       // Begrenze den Neigungswinkel, um extreme Beschleunigung zu vermeiden.
        if (gamma < -MAX_TILT_DEGREE) {
            gamma = -MAX_TILT_DEGREE;
        } else if (gamma > MAX_TILT_DEGREE) {
@@ -1186,7 +1178,7 @@
                event.preventDefault();
                break;
            case 'Space':
-               // Calls the same logic as tapping/clicking
+              
                flipGravity({ clientY: HUD_HEIGHT + 1 });
                event.preventDefault();
                break;
@@ -1215,13 +1207,13 @@
 
 
    // Gyroscope listener
-   // DIESER LISTENER REGISTRIERT DIE GERÄTENEIGUNG UND WIRD DURCH DAS R1-SYSTEM BEREITGESTELLT.
+   // DIESER LISTENER REGISTRIERT DIE GERÄTENEIGUNG UND WIRD DURCH DAS RABBIT r1-SYSTEM BEREITGESTELLT.
    window.addEventListener('deviceorientation', handleGyro, true);
 
 
    // Tap/Click Listener for Gravity Flip (Touchscreen and mouse click)
    canvas.addEventListener('click', flipGravity, false);
-   // Dies fängt die Berührungserkennung auf dem R1-Touchscreen ab.
+   // Dies fängt die Berührungserkennung auf dem r1-Touchscreen ab.
    canvas.addEventListener('touchstart', flipGravity, { passive: false });
   
    // Keyboard listeners for desktop control
