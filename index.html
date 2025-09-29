@@ -6,7 +6,7 @@
    <title>GRAV1TY MAN</title>
    <script src="https://cdn.tailwindcss.com"></script>
    <style>
-       /* Gravity-Man CSS - Rabbit R1 Pure Viewport Mode */
+       /* Gravity-Man CSS - Rabbit r1 Pure Viewport Mode */
        * {
            margin: 0;
            padding: 0;
@@ -15,7 +15,7 @@
 
 
        body, html {
-           /* Fixed dimensions for the R1 view (240x282) */
+           /* Fixed dimensions for the r1 view (240x282) */
            width: 240px;
            height: 282px;
            margin: 0;
@@ -40,7 +40,7 @@
        }
 
 
-       /* HUD Styling: Now with central music button */
+       /* HUD Styling: with central music button */
        #hud {
            position: absolute;
            top: 0;
@@ -48,7 +48,7 @@
            width: 100%;
            height: 16px;
            padding: 2px;
-           color: #ff6600; /* Rabbit R1 Orange */
+           color: #ff6600; /* Rabbit r1 Orange */
            background: rgba(0, 0, 0, 0.9);
            font-size: 0.4rem;
            display: flex;
@@ -162,7 +162,7 @@
 
 <div id="game-container">
    <!-- BACKGROUND MUSIC ELEMENT -->
-   <audio id="game-music" src="https://raw.githubusercontent.com/atomlabor/Grav1ty-Man/main/Pixel_Dreamers.mp3" loop preload="auto"></audio>
+   <audio id="game-music" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/Pixel_Dreamers.mp3" loop preload="auto"></audio>
 
 
    <div id="hud">
@@ -186,17 +186,17 @@
    <canvas id="gameCanvas" width="240" height="282"></canvas>
   
    <div id="loading-screen" class="game-overlay">
-       <div class="overlay-title">LOADING ASSETS...</div>
+       <div class="overlay-title">LOADING GAME...</div>
        <div id="loading-progress" class="text-white text-xs mt-2">0%</div>
    </div>
 
 
    <!-- Splash Screen: Clickable full screen -->
    <div id="splash-screen" class="game-overlay hidden" onclick="startGame()">
-       <img id="splash-img" src="https://placehold.co/100x50/000/FFF?text=GRAV1TY+MAN" alt="Splash Screen" class="w-1/2 h-auto mb-4">
+       <img id="splash-img" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-splash.png" class="w-1/2 h-auto mb-4">
       
        <div class="text-white text-[0.6rem] mt-4 mb-4 text-center leading-tight">
-           Tilt to move. Tap to flip gravity. Collect 8 key parts across 5 rooms.
+           tilt to move. tap to flip gravity. collect 8 key parts across 5 rooms to fix your starship.
        </div>
       
        <div class="overlay-text">TAP TO START</div>
@@ -204,16 +204,16 @@
 
 
    <div id="end-screen" class="game-overlay hidden">
-       <img id="end-img" src="https://placehold.co/100x50/000/FFF?text=MISSION+COMPLETE" alt="End Screen" class="w-1/2 h-auto mb-4">
+       <img id="end-img" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/endscreen.png" alt="End Screen" class="w-1/2 h-auto mb-4">
        <div class="overlay-title">MISSION COMPLETE!</div>
-       <div class="text-white text-xs mt-2">You mastered all levels!</div>
+       <div class="text-white text-xs mt-2">your starship is fixed</div>
        <div class="overlay-text" onclick="location.reload()">PLAY AGAIN</div>
    </div>
 
 
    <div id="game-over-message" class="game-overlay hidden">
-       <div class="overlay-title">GAME OVER!</div>
-       <div class="text-white text-xs mt-2">Restarting shortly...</div>
+       <div class="overlay-title">TRY AGAIN!</div>
+       <div class="text-white text-xs mt-2">restarting shortly...</div>
    </div>
 
 
@@ -241,13 +241,13 @@
 
 
    // Gyro & Keyboard State
-   let gyroTilt = 0; // Wichtig: Wird durch das Gyroskop (R1-Hardware) gesetzt.
+   let gyroTilt = 0; // Wichtig: Wird durch das Gyroskop (r1-Hardware) gesetzt.
    let keyboardTilt = 0;
    const MAX_TILT_DEGREE = 20;
    const KEYBOARD_ACCEL_FACTOR = 0.5;
   
    // HÖHERER WERT: Gegner reagieren stärker auf die Neigung des Geräts.
-   const ENEMY_GYRO_INFLUENCE = 2.0;
+   const ENEMY_GYRO_INFLUENCE = 1.5;
   
    let isMusicMuted = false; // State for music control
 
@@ -674,12 +674,9 @@
       
        if (!isSafe) {
            console.warn("Could not find a guaranteed safe starting position. Using original (potentially unsafe) location.");
-           // Fallback to the original, potentially dangerous spot.
            safePlayerX = level.playerStart.x;
            safePlayerY = level.playerStart.y;
        }
-
-
 
 
        // 3. Set player state based on the determined safe position
@@ -716,7 +713,6 @@
 
 
    // --- GAME LOOP & UPDATE ---
-
 
    function gameLoop(timestamp) {
        if (!gameLoopRunning) return;
@@ -790,7 +786,6 @@
 
 
 
-
        const staticPlatforms = level.platforms.filter(p => Array.isArray(p));
        const movingPlatforms = level.platforms.filter(p => typeof p === 'object' && p.w);
 
@@ -847,7 +842,6 @@
                }
            }
        });
-
 
 
 
@@ -1233,6 +1227,3 @@
 
 </body>
 </html>
-
-
-
