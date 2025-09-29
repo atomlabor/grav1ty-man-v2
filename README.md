@@ -2,7 +2,7 @@
 Ein innovatives 2D-Plattformspiel für das Rabbit r1-System mit einzigartiger Sensorsteuerung.
 
 ## 📖 Die Story
-Ein Astronaut ist auf einer Raumstation notgelandet, da sein Raumschiff kaputt gegangen ist. Um das Raumschiff zu reparieren, benötigt er Keycards. In jedem der 5 Räume der Station sind 8 Keycards zu finden. Doch Vorsicht: Die bösen Dalviks mögen Eindringlinge nicht! Sammle alle Keycards, um die Technik zu fixen und ins nächste Level zu gelangen. Hilf dem Astronauten – per Touch wechselst du die Seiten, über Gyro-Steuerung sammelst du die Keycards. Nach 8 gesammelten Keycards öffnet sich die Schleuse zum nächsten Raum.
+Ein Astronaut musste nach einem schweren Defekt seines Raumschiffs auf einer Raumstation notlanden. Um das Raumschiff zu reparieren, benötigt er Keycards. In jedem der 5 Räume der Station sind 8 Keycards zu finden. Doch Vorsicht: Die bösen Dalviks mögen Eindringlinge nicht! Sammle alle Keycards, um die Technik zu fixen und ins nächste Level zu gelangen. Hilf dem Astronauten – per Touch wechselst du die Seiten, über Gyro-Steuerung sammelst du die Keycards. Nach 8 gesammelten Keycards öffnet sich die Schleuse zum nächsten Raum.
 
 ## 🚀 Features
 - **Canvas-only Rendering** (240x282 Auflösung)
