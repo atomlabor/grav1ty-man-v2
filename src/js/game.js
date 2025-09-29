@@ -1,10 +1,9 @@
-// Grav1ty Man v2 - Rabbit R1 Edition
-// Canvas-only implementation with sensor controls
+// grav1ty man v2 - Rabbit r1 - atomlabor.de production
 
 const canvas = document.getElementById('gameCanvas');
 const ctx = canvas.getContext('2d');
 
-// Game constants for Rabbit R1 (240x282)
+// Game constants for Rabbit r1 (240x282)
 const CANVAS_WIDTH = 240;
 const CANVAS_HEIGHT = 282;
 const GRAVITY = 0.5;
@@ -34,7 +33,7 @@ function init() {
     gameRunning = true;
     gameLoop();
     
-    // Add touch/click event listeners for Rabbit R1
+    // Add touch/click event listeners for Rabbit r1
     canvas.addEventListener('touchstart', handleInput);
     canvas.addEventListener('click', handleInput);
     document.addEventListener('keydown', handleKeyInput);
@@ -108,7 +107,7 @@ function update() {
     });
     
     // Increase game speed gradually
-    gameSpeed += 0.001;
+    gameSpeed += 0.0001;
 }
 
 // Collision detection
