@@ -1071,24 +1071,26 @@
     }
 
 
-    // Update HUD
-    function updateHUD(itemsCollected = 0) {
-        const level = currentLevelData.length > 0 ?
-                      originalLevelData[currentLevel] :
-                      { title: "grav1ty", items: [] };
-       
-        const collectedCount = itemsCollected || (level.items ? level.items.filter(i => i.collected).length : 0);
-       
-        hudLevel.textContent = `L${currentLevel + 1}: ${level.title.substring(0, 10)}`;
-       
-        const gravityStatus = player.isGravityUp ? "UP" : "DOWN";
-        hudItems.textContent = `G: ${gravityStatus} | KEY: ${collectedCount}/${REQUIRED_ITEMS}`;
+// Update HUD
+function updateHUD(itemsCollected = 0) {
+    // Hole IMMER den Level aus originalLevelData, falls nicht vorhanden, Fallback
+    const level = originalLevelData[currentLevel] || { title: `Level ${currentLevel + 1}`, items: [] };
+   
+    // Anzahl gesammelter Items
+    const collectedCount = itemsCollected || (level.items ? level.items.filter(i => i.collected).length : 0);
+   
+    // Zeige Levelnummer und vollen Leveltitel im HUD an
+    hudLevel.textContent = `L${currentLevel + 1}: ${level.title}`;
+   
+    // Gravitätsstatus und Item-Übersicht
+    const gravityStatus = player.isGravityUp ? "UP" : "DOWN";
+    hudItems.textContent = `G: ${gravityStatus} | KEY: ${collectedCount}/${REQUIRED_ITEMS}`;
 
-
-        if (collectedCount === REQUIRED_ITEMS && level.exit && !level.exit.open) {
-            hudItems.textContent += " | EXIT!";
-        }
+    // Exit-Hinweis, wenn alle Items gesammelt
+    if (collectedCount === REQUIRED_ITEMS && level.exit && !level.exit.open) {
+        hudItems.textContent += " | EXIT!";
     }
+}
 
 
   
