@@ -1,1225 +1,1219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-   <meta charset="UTF-8">
-   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-   <title>GRAV1TY MAN</title>
-   <script src="https://cdn.tailwindcss.com"></script>
-   <style>
-       /* Gravity-Man CSS - Rabbit r1 Pure Viewport Mode */
-       * {
-           margin: 0;
-           padding: 0;
-           box-sizing: border-box;
-       }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>GRAV1TY MAN</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        /* Gravity-Man CSS - Rabbit r1 Pure Viewport Mode */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
 
-       body, html {
-           /* Fixed dimensions for the r1 view (240x282) */
-           width: 240px;
-           height: 282px;
-           margin: 0;
-           padding: 0;
-           overflow: hidden;
-           background: #000;
-           touch-action: none;
-           font-family: 'Press Start 2P', monospace;
-       }
+        body, html {
+            /* Fixed dimensions for the r1 view (240x282) */
+            width: 240px;
+            height: 282px;
+            margin: 0;
+            padding: 0;
+            overflow: hidden;
+            background: #000;
+            touch-action: none;
+            font-family: 'Press Start 2P', monospace;
+        }
 
 
-       @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
+        @import url('https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap');
 
 
-       #game-container {
-           width: 240px;
-           height: 282px;
-           position: relative;
-           box-shadow: none;
-           border: none;
-           overflow: hidden;
-       }
+        #game-container {
+            width: 240px;
+            height: 282px;
+            position: relative;
+            box-shadow: none;
+            border: none;
+            overflow: hidden;
+        }
 
 
-       /* HUD Styling: with central music button */
-       #hud {
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 16px;
-           padding: 2px;
-           color: #ff6600; /* Rabbit r1 Orange */
-           background: rgba(0, 0, 0, 0.9);
-           font-size: 0.4rem;
-           display: flex;
-           justify-content: space-between; /* Distributes the three elements */
-           align-items: center;
-           z-index: 100;
-           border-bottom: 1px solid #ff6600;
-       }
-      
-       #hud-music {
-           cursor: pointer;
-           line-height: 1;
-           text-align: center;
-           user-select: none;
-           /* Small container for the SVG */
-           width: 16px;
-           height: 16px;
-           display: flex;
-           align-items: center;
-           justify-content: center;
-       }
-      
-       /* Ensure the SVG is small and styled */
-       #music-icon {
-           width: 12px;
-           height: 12px;
-           stroke: #ff6600;
-       }
+        /* HUD Styling: with central music button */
+        #hud {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 16px;
+            padding: 2px;
+            color: #ff6600; /* Rabbit r1 Orange */
+            background: rgba(0, 0, 0, 0.9);
+            font-size: 0.4rem;
+            display: flex;
+            justify-content: space-between; /* Distributes the three elements */
+            align-items: center;
+            z-index: 100;
+            border-bottom: 1px solid #ff6600;
+        }
+       
+        #hud-music {
+            cursor: pointer;
+            line-height: 1;
+            text-align: center;
+            user-select: none;
+            /* Small container for the SVG */
+            width: 16px;
+            height: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+       
+        /* Ensure the SVG is small and styled */
+        #music-icon {
+            width: 12px;
+            height: 12px;
+            stroke: #ff6600;
+        }
 
 
-       #gameCanvas {
-           display: block;
-           width: 240px;
-           height: 282px;
-           margin: 0;
-           padding: 0;
-           border: none;
-           position: absolute;
-           top: 0;
-           left: 0;
-           image-rendering: pixelated;
-           image-rendering: -moz-crisp-edges;
-           image-rendering: crisp-edges;
-       }
+        #gameCanvas {
+            display: block;
+            width: 240px;
+            height: 282px;
+            margin: 0;
+            padding: 0;
+            border: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            image-rendering: pixelated;
+            image-rendering: -moz-crisp-edges;
+            image-rendering: crisp-edges;
+        }
 
 
-       /* Overlay Styles */
-       .game-overlay {
-           position: absolute;
-           top: 0;
-           left: 0;
-           width: 100%;
-           height: 100%;
-           background-color: rgba(0, 0, 0, 0.95);
-           color: white;
-           display: flex;
-           flex-direction: column;
-           align-items: center;
-           text-align: center;
-           z-index: 150;
-       }
+        /* Overlay Styles */
+        .game-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            z-index: 150;
+        }
 
 
-       /* Default positioning for splash/end/loading: pushed down by HUD, centered on content top */
-       #splash-screen, #end-screen, #loading-screen {
-           height: calc(100% - 16px);
-           top: 16px;
-           justify-content: flex-start;
-           padding-top: 40px;
-       }
+        /* Default positioning for splash/end/loading: pushed down by HUD, centered on content top */
+        #splash-screen, #end-screen, #loading-screen {
+            height: calc(100% - 16px);
+            top: 16px;
+            justify-content: flex-start;
+            padding-top: 40px;
+        }
 
 
-       /* Specific positioning for GAME OVER: centered in the game area */
-       #game-over-message {
-           height: calc(100% - 16px);
-           top: 16px;
-           justify-content: center; /* Centers vertically in the game area */
-           padding-top: 0;
-       }
-      
-       .overlay-title {
-           font-size: 0.8rem;
-           margin-bottom: 0.5rem;
-           text-shadow: 0 0 4px white;
-       }
-      
-       /* Game Over Title Color - Rabbit Orange */
-       #game-over-message .overlay-title {
-           color: #ff6600;
-           text-shadow: 0 0 10px rgba(255, 102, 0, 0.8), 0 0 2px #ff6600;
-       }
+        /* Specific positioning for GAME OVER: centered in the game area */
+        #game-over-message {
+            height: calc(100% - 16px);
+            top: 16px;
+            justify-content: center; /* Centers vertically in the game area */
+            padding-top: 0;
+        }
+       
+        .overlay-title {
+            font-size: 0.8rem;
+            margin-bottom: 0.5rem;
+            text-shadow: 0 0 4px white;
+        }
+       
+        /* Game Over Title Color - Rabbit Orange */
+        #game-over-message .overlay-title {
+            color: #ff6600;
+            text-shadow: 0 0 10px rgba(255, 102, 0, 0.8), 0 0 2px #ff6600;
+        }
 
 
 
 
-       .overlay-text {
-           font-size: 0.5rem;
-           margin-top: 0.5rem;
-           cursor: pointer;
-           animation: blink 1s step-end infinite;
-       }
+        .overlay-text {
+            font-size: 0.5rem;
+            margin-top: 0.5rem;
+            cursor: pointer;
+            animation: blink 1s step-end infinite;
+        }
 
 
-       @keyframes blink {
-           50% { opacity: 0.1; }
-       }
-   </style>
+        @keyframes blink {
+            50% { opacity: 0.1; }
+        }
+    </style>
 </head>
 <body>
 
 
 <div id="game-container">
-   <!-- BACKGROUND MUSIC ELEMENT -->
-   <audio id="game-music" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/Pixel_Dreamers.mp3" loop preload="auto"></audio>
+    <audio id="game-music" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/Pixel_Dreamers.mp3" loop preload="auto"></audio>
 
 
-   <div id="hud">
-       <div id="hud-level">LEVEL 1: Start</div>
-      
-       <!-- MUSIC CONTROL BUTTON with SVG -->
-       <div id="hud-music" onclick="toggleMusic()">
-           <svg id="music-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ff6600" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
-               <!-- Speaker Base -->
-               <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
-               <!-- Sound waves (Initially ON) -->
-               <path id="sound-waves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 1 0 0 14.14"></path>
-               <!-- Mute slash (Initially Hidden) -->
-               <line id="mute-slash" x1="1" y1="23" x2="23" y2="1" style="display:none;"></line>
-           </svg>
-       </div>
-      
-       <div id="hud-items">G: DOWN | KEY: 0/8</div>
-   </div>
-  
-   <canvas id="gameCanvas" width="240" height="282"></canvas>
-  
-   <div id="loading-screen" class="game-overlay">
-       <div class="overlay-title">LOADING GAME...</div>
-       <div id="loading-progress" class="text-white text-xs mt-2">0%</div>
-   </div>
+    <div id="hud">
+        <div id="hud-level">LEVEL 1: Start</div>
+       
+        <div id="hud-music" onclick="toggleMusic()">
+            <svg id="music-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="#ff6600" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" class="w-3 h-3">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                <path id="sound-waves" d="M15.54 8.46a5 5 0 0 1 0 7.07M19.07 4.93a10 10 0 1 0 0 14.14"></path>
+                <line id="mute-slash" x1="1" y1="23" x2="23" y2="1" style="display:none;"></line>
+            </svg>
+        </div>
+       
+        <div id="hud-items">G: DOWN | KEY: 0/8</div>
+    </div>
+   
+    <canvas id="gameCanvas" width="240" height="282"></canvas>
+   
+    <div id="loading-screen" class="game-overlay">
+        <div class="overlay-title">LOADING GAME...</div>
+        <div id="loading-progress" class="text-white text-xs mt-2">0%</div>
+    </div>
 
 
-   <!-- Splash Screen: Clickable full screen -->
-   <div id="splash-screen" class="game-overlay hidden" onclick="startGame()">
-       <img id="splash-img" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-splash.png" class="w-1/2 h-auto mb-4">
-      
-       <div class="text-white text-[0.6rem] mt-4 mb-4 text-center leading-tight">
-           tilt to move. tap to flip gravity. collect 8 key parts across 5 rooms to fix your starship.
-       </div>
-      
-       <div class="overlay-text">TAP TO START</div>
-   </div>
+    <div id="splash-screen" class="game-overlay hidden" onclick="startGame()">
+        <img id="splash-img" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-splash.png" class="w-1/2 h-auto mb-4">
+       
+        <div class="text-white text-[0.6rem] mt-4 mb-4 text-center leading-tight">
+            tilt to move. tap to flip gravity. collect 8 key parts across 5 rooms to fix your starship.
+        </div>
+       
+        <div class="overlay-text">TAP TO START</div>
+    </div>
 
 
-   <div id="end-screen" class="game-overlay hidden">
-       <img id="end-img" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/endscreen.png" alt="End Screen" class="w-1/2 h-auto mb-4">
-       <div class="overlay-title">MISSION COMPLETE!</div>
-       <div class="text-white text-xs mt-2">your starship is fixed</div>
-       <div class="overlay-text" onclick="location.reload()">PLAY AGAIN</div>
-   </div>
+    <div id="end-screen" class="game-overlay hidden">
+        <img id="end-img" src="https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/endscreen.png" alt="End Screen" class="w-1/2 h-auto mb-4">
+        <div class="overlay-title">MISSION COMPLETE!</div>
+        <div class="text-white text-xs mt-2">your starship is fixed</div>
+        <div class="overlay-text" onclick="location.reload()">PLAY AGAIN</div>
+    </div>
 
 
-   <div id="game-over-message" class="game-overlay hidden">
-       <div class="overlay-title">TRY AGAIN!</div>
-       <div class="text-white text-xs mt-2">restarting shortly...</div>
-   </div>
+    <div id="game-over-message" class="game-overlay hidden">
+        <div class="overlay-title">TRY AGAIN!</div>
+        <div class="text-white text-xs mt-2">restarting shortly...</div>
+    </div>
 
 
 </div>
 
 
 <script>
-   // --- CONFIGURATION & STATE ---
-   const CANVAS_WIDTH = 240;
-   const CANVAS_HEIGHT = 282;
-   const HUD_HEIGHT = 16;    
-   const GAME_AREA_HEIGHT = CANVAS_HEIGHT - HUD_HEIGHT;
-  
-   const NUM_LEVELS = 5; // Total number of levels
-   const REQUIRED_ITEMS = 8;
-   const TILE_SIZE = 8;
-  
-   const START_SAFE_DISTANCE = 64; // Player must start at least 64px (8 tiles) away from any enemy
-
-
-   let gameState = 'loading';
-   let currentLevel = 0;
-   let lastTime = 0;
-   let gameLoopRunning = false;
-
-
-   // Gyro & Keyboard State
-   let gyroTilt = 0; // Wichtig: Wird durch das Gyroskop (r1-Hardware) gesetzt.
-   let keyboardTilt = 0;
-   const MAX_TILT_DEGREE = 20;
-   const KEYBOARD_ACCEL_FACTOR = 0.5;
-  
-   // HÖHERER WERT: Gegner reagieren stärker auf die Neigung des Geräts.
-   const ENEMY_GYRO_INFLUENCE = 1.5;
-  
-   let isMusicMuted = false; // State for music control
-
-
-   // Game Objects
-   const player = {
-       x: TILE_SIZE, y: TILE_SIZE * 5, width: TILE_SIZE, height: TILE_SIZE,
-       velX: 0, velY: 0,
-       accelX: 0,
-       maxSpeed: 3,
-       isGrounded: false,
-       isDead: false,
-       isGravityUp: false
-   };
-
-
-   const gravity = 0.3;
-   const friction = 0.8;
-
-
-
-
-   // DOM Elements
-   const canvas = document.getElementById('gameCanvas');
-   const ctx = canvas.getContext('2d');
-   const loadingScreen = document.getElementById('loading-screen');
-   const loadingProgress = document.getElementById('loading-progress');
-   const splashScreen = document.getElementById('splash-screen');
-   const endScreen = document.getElementById('end-screen');
-   const gameOverMessage = document.getElementById('game-over-message');
-   const hudLevel = document.getElementById('hud-level');
-   const hudItems = document.getElementById('hud-items');
-   const hudMusic = document.getElementById('hud-music');
-  
-   // SVG Elements for Music Toggle
-   let soundWaves, muteSlash;
-
-
-   const splashImg = document.getElementById('splash-img');
-   const endImg = document.getElementById('end-img');
-  
-   // Assets and Audio
-   const assets = {};
-   const assetUrls = {
-       player: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-player.png',
-       background: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/spaceship-bg.png',
-       enemy: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/dalek.png',
-       item: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/keycard.png',
-       exit: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/exit.png',
-       splash: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-splash.png',
-       end: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/endscreen.png'
-   };
-   let audioContext, oscillator;
-   let gameMusic;
-
-
-   // --- LEVEL DEFINITIONS ---
-  
-   const originalLevelData = [
-       // Level 1: Beginner's Trap (Bottom Start)
-       {
-           platforms: [
-               [0, 258, 240, TILE_SIZE], // Floor (Y=266 - 8)
-               [0, 0, TILE_SIZE, 266], // Left Wall (Height 266)
-               [232, 0, TILE_SIZE, 266], // Right Wall (Height 266)
-              
-               // Platforms
-               [80, 184, 80, TILE_SIZE],
-               [160, 184, 72, TILE_SIZE],
-               [0, 124, 150, TILE_SIZE],
-               [180, 64, 52, TILE_SIZE],
-               [40, 64, 100, TILE_SIZE],
-               [0, 4, 40, TILE_SIZE] // Exit Platform (Y=4)
-           ],
-           items: [
-               { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false },
-               { x: 10, y: 176, collected: false }, { x: 220, y: 176, collected: false },
-               { x: 10, y: 116, collected: false }, { x: 160, y: 116, collected: false },
-               { x: 10, y: 56, collected: false }, { x: 220, y: 56, collected: false }
-           ],
-           enemies: [
-               { x: 90, y: 176, dx: 0.8, minX: 80, maxX: 152, minY: 0, isVertical: false, initialX: 90, initialY: 176 }
-           ],
-           exit: { x: 10, y: 0, open: false },
-           playerStart: { x: 120, y: 250 }, // START BOTTOM
-           title: "Beginner's Trap"
-       },
-       // Level 2: Vertical Drop (Bottom Start)
-       {
-           platforms: [
-               [0, 258, 240, TILE_SIZE],
-               [0, 0, TILE_SIZE, 266],
-               [232, 0, TILE_SIZE, 266],
-              
-               [40, 204, 160, TILE_SIZE],
-               [40, 144, 160, TILE_SIZE],
-               [40, 84, 160, TILE_SIZE],
-              
-               [210, 0, 22, TILE_SIZE],
-           ],
-           items: [
-               { x: 20, y: 250, collected: false }, { x: 220, y: 250, collected: false },
-               { x: 210, y: 196, collected: false }, { x: 50, y: 136, collected: false },
-               { x: 210, y: 76, collected: false }, { x: 50, y: 4, collected: false },
-               { x: 10, y: 136, collected: false }, { x: 220, y: 4, collected: false }
-           ],
-           enemies: [
-               { x: 120, y: 184, dy: 1.2, minY: 94, maxY: 194, isVertical: true, initialY: 184, initialX: 120 },
-               { x: 10, y: 250, dx: 1.5, minX: 8, maxX: 232, minY: 0, isVertical: false, initialX: 10, initialY: 250 }
-           ],
-           exit: { x: 210, y: 5, open: false },
-           playerStart: { x: 120, y: 250 }, // START BOTTOM
-           title: "Vertical Drop"
-       },
-       // Level 3: Central Shaft (Bottom Start) - FIXED FOR FLOW
-       {
-           platforms: [
-               [0, 258, 240, TILE_SIZE], // Floor
-               [0, 0, TILE_SIZE, 266], // Left Wall
-               [232, 0, TILE_SIZE, 266], // Right Wall
-              
-               // Platform 1 (Y=204): Lower split, 20px wide central gap
-               [0, 204, 110, TILE_SIZE], [130, 204, 110, TILE_SIZE],
-              
-               // Platform 2 (Y=144): Mid split, 20px wide central gap
-               [0, 144, 110, TILE_SIZE], [130, 144, 110, TILE_SIZE],
-              
-               // Platform 3 (Y=84): Upper split, 20px wide central gap
-               [0, 84, 110, TILE_SIZE], [130, 84, 110, TILE_SIZE],
-              
-               // Small platforms at the very top for item placement
-               [50, -4, 30, TILE_SIZE],
-               [160, -4, 30, TILE_SIZE],
-           ],
-           items: [
-               { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false }, // Floor
-               { x: 120, y: 196, collected: false }, // Above P1 gap
-               { x: 120, y: 136, collected: false }, // Above P2 gap 
-               { x: 10, y: 136, collected: false }, { x: 220, y: 136, collected: false }, // P2 side items
-               { x: 120, y: 76, collected: false }, // Above P3 gap
-               { x: 60, y: 4, collected: false }, // Top left platform
-               { x: 170, y: 4, collected: false } // Top right platform
-           ],
-           enemies: [
-               { x: 25, y: 250, dx: 0.5, minX: 10, maxX: 220, minY: 0, isVertical: false, initialX: 10, initialY: 250 },
-               // Vertical enemy in the central shaft
-               { x: 115, y: 134, dy: 1.5, minY: 94, maxY: 194, isVertical: true, initialY: 194, initialX: 115 }
-           ],
-           exit: { x: 115, y: 0, open: false }, // Central exit, accessible from the top gap
-           playerStart: { x: 220, y: 220 },
-           title: "Central Shaft"
-       },
-       // Level 4: Ceiling Start (Non-standard Start Position)
-       {
-           platforms: [
-               [0, 258, 240, TILE_SIZE], // Floor
-               [0, 0, TILE_SIZE, 266], // Left Wall
-               [232, 0, TILE_SIZE, 266], // Right Wall
-              
-               [40, 50, 80, TILE_SIZE], // Start Platform (around y=50)
-               [160, 100, 72, TILE_SIZE],
-               [0, 150, 100, TILE_SIZE],
-               [130, 200, 50, TILE_SIZE]
-           ],
-           items: [
-               { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false },
-               { x: 10, y: 192, collected: false }, { x: 170, y: 192, collected: false },
-               { x: 10, y: 42, collected: false }, { x: 160, y: 92, collected: false },
-               { x: 10, y: 142, collected: false }, { x: 220, y: 142, collected: false }
-           ],
-           enemies: [
-               // Vertical enemy moving far below the start point
-               { x: 120, y: 240, dy: 1.5, minY: 150, maxY: 250, isVertical: true, initialY: 240, initialX: 120 }
-           ],
-           exit: { x: 220, y: 4, open: false },
-           playerStart: { x: 60, y: 42 }, // START NEAR CEILING
-           title: "Ceiling Start"
-       },
-       // Level 5: Middle Start (Non-standard Start Position)
-       {
-           platforms: [
-               [0, 258, 240, TILE_SIZE], // Floor
-               [0, 0, TILE_SIZE, 266], // Left Wall
-               [232, 0, TILE_SIZE, 266], // Right Wall
-              
-               [0, 160, 220, TILE_SIZE], // Wide middle platform (y=160)
-               [50, 100, 140, TILE_SIZE],
-               [10, 40, 220, TILE_SIZE]
-           ],
-           items: [
-               { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false },
-               { x: 10, y: 152, collected: false }, { x: 220, y: 152, collected: false },
-               { x: 10, y: 92, collected: false }, { x: 220, y: 92, collected: false },
-               { x: 10, y: 32, collected: false }, { x: 220, y: 32, collected: false }
-           ],
-           enemies: [
-               // Horizontal enemy on the middle platform
-               { x: 10, y: 152, dx: 1, minX: 10, maxX: 220, minY: 0, isVertical: false, initialX: 10, initialY: 152 },
-               // Vertical enemy above the start point
-               { x: 120, y: 92, dy: 1, minY: 50, maxY: 140, isVertical: true, initialY: 92, initialX: 120 }
-           ],
-           exit: { x: 120, y: 4, open: false },
-           playerStart: { x: 120, y: 152 }, // START MIDDLE
-           title: "Middle Start"
-       }
-   ];
-
-
-   let currentLevelData = [];
-
-
-   // --- FUNCTIONS ---
-  
-   // Utility function for distance calculation
-   function distance(x1, y1, x2, y2) {
-       return Math.hypot(x2 - x1, y2 - y1);
-   }
-
-
-   // Asset Loading
-   function loadAssets() {
-       const totalAssets = Object.keys(assetUrls).length;
-       let loadedCount = 0;
-      
-       soundWaves = document.getElementById('sound-waves');
-       muteSlash = document.getElementById('mute-slash');
-      
-       const handleAssetLoad = (key, img) => {
-           assets[key] = img;
-           loadedCount++;
-           loadingProgress.textContent = `${Math.round((loadedCount / totalAssets) * 100)}%`;
-          
-           if (loadedCount === totalAssets) {
-               setupAudio();
-              
-               if (!assets.splash.isFallback) splashImg.src = assets.splash.src;
-               if (!assets.end.isFallback) endImg.src = assets.end.src;
-              
-               loadingScreen.classList.add('hidden');
-               splashScreen.classList.remove('hidden');
-               gameState = 'splash';
-              
-            
-               if (isMusicMuted) {
-                   soundWaves.style.display = 'none';
-                   muteSlash.style.display = 'block';
-               } else {
-                   soundWaves.style.display = 'block';
-                   muteSlash.style.display = 'none';
-               }
-           }
-       };
-
-
-       for (const key in assetUrls) {
-           const img = new Image();
-           img.crossOrigin = 'anonymous';
-           img.onload = () => handleAssetLoad(key, img);
-           img.onerror = () => {
-               console.error(`Error loading asset: ${assetUrls[key]}. Using fallback.`);
-               assets[key] = { src: assetUrls[key], isFallback: true };
-               handleAssetLoad(key, img);
-           };
-           img.src = assetUrls[key];
-       }
-   }
-  
-   // Audio Setup
-   const flipTune = [1000, 1500];
-   const noteDuration = 100;
-  
-   function setupAudio() {
-       try {
-           audioContext = new (window.AudioContext || window.webkitAudioContext)();
-       } catch (e) {
-           console.warn('Web Audio API is not supported.');
-       }
-       gameMusic = document.getElementById('game-music');
-   }
-
-
-   function playNote(freq) {
-       if (!audioContext || audioContext.state === 'suspended' || isMusicMuted) return;
-       let oscillator = audioContext.createOscillator();
-       const gainNode = audioContext.createGain();
-
-
-       oscillator.type = 'square';
-       oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
-
-
-       gainNode.gain.setValueAtTime(0, audioContext.currentTime);
-       gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
-       gainNode.gain.linearRampToValueAtTime(0.0, audioContext.currentTime + (noteDuration / 1000));
-
-
-       oscillator.connect(gainNode);
-       gainNode.connect(audioContext.destination);
-
-
-       oscillator.start();
-       oscillator.stop(audioContext.currentTime + (noteDuration / 1000));
-   }
-  
-   function playFlipTune() {
-       if (isMusicMuted) return; // No sound effect if muted
-       if (!audioContext || audioContext.state === 'suspended') return;
-       flipTune.forEach((freq, index) => {
-           setTimeout(() => playNote(freq), index * 50);
-       });
-   }
-
-
-   // Toggle music mute/play state
-   function toggleMusic() {
-       if (!gameMusic) return;
-
-
-       isMusicMuted = !isMusicMuted;
-      
-       if (isMusicMuted) {
-           gameMusic.pause();
-           // Update SVG: Hide waves, show slash
-           if (soundWaves) soundWaves.style.display = 'none';
-           if (muteSlash) muteSlash.style.display = 'block';
-       } else {
-           // Only attempt to play if the game is active (not on splash)
-           if (gameState !== 'splash') {
-               // This ensures play() is called after a user interaction
-               gameMusic.play().catch(e => console.warn('Audio could not be started.'));
-           }
-           // Update SVG: Show waves, hide slash
-           if (soundWaves) soundWaves.style.display = 'block';
-           if (muteSlash) muteSlash.style.display = 'none';
-       }
-   }
-  
-   // Level Logic
-   function loadLevel(levelIndex) {
-       currentLevel = levelIndex;
-       if (currentLevel >= NUM_LEVELS) {
-           showEndScreen();
-           return;
-       }
-      
-       const original = originalLevelData[currentLevel];
-       // Deep clone to ensure enemies/items reset properly
-       let level = JSON.parse(JSON.stringify(original));
-       currentLevelData = level;
-
-
-       // ADD MANDATORY TOP BOUNDARY (CEILING)
-       level.platforms.push([0, 0, CANVAS_WIDTH, TILE_SIZE]);
-
-
-       // 1. Apply vertical shift (HUD_HEIGHT) to all game elements
-       level.platforms = level.platforms.map(p => {
-           if (Array.isArray(p)) {
-               return [p[0], p[1] + HUD_HEIGHT, p[2], p[3]];
-           } else {
-               p.y += HUD_HEIGHT;
-               if (p.minY !== undefined) p.minY += HUD_HEIGHT;
-               if (p.maxY !== undefined) p.maxY += HUD_HEIGHT;
-               return p;
-           }
-       });
-
-
-       level.items.forEach(item => { item.y += HUD_HEIGHT; });
-       level.exit.y += HUD_HEIGHT;
-       // Shift player start coordinates
-       level.playerStart.y += HUD_HEIGHT;
-
-
-       level.enemies.forEach(enemy => {
-           enemy.y += HUD_HEIGHT;
-           if (enemy.minY !== undefined) enemy.minY += HUD_HEIGHT;
-           if (enemy.maxY !== undefined) enemy.maxY += HUD_HEIGHT;
-       });
-
-
-
-
-       // 2. ENFORCE PLAYER START SAFETY
-       let safePlayerX = level.playerStart.x;
-       let safePlayerY = level.playerStart.y;
-       let isSafe = false;
-      
-       // Define candidate starting positions (original + slight shifts)
-       const candidates = [
-           { x: level.playerStart.x, y: level.playerStart.y }, // 1. Original spot
-           { x: level.playerStart.x + TILE_SIZE, y: level.playerStart.y }, // 2. One tile right
-           { x: level.playerStart.x - TILE_SIZE, y: level.playerStart.y }, // 3. One tile left
-           { x: level.playerStart.x, y: level.playerStart.y - TILE_SIZE }, // 4. One tile up
-           { x: level.playerStart.x, y: level.playerStart.y + TILE_SIZE }, // 5. One tile down
-       ];
-
-
-       for (const candidate of candidates) {
-           let collisionFound = false;
-          
-           // Check distance and overlap with all enemies
-           for (const enemy of level.enemies) {
-               const dist = distance(candidate.x, candidate.y, enemy.x, enemy.y);
-              
-               // Check proximity (64px distance) OR check if the enemy tile overlaps the candidate tile
-               if (dist < START_SAFE_DISTANCE ||
-                   (candidate.x < enemy.x + TILE_SIZE && candidate.x + player.width > enemy.x &&
-                    candidate.y < enemy.y + TILE_SIZE && candidate.y + player.height > enemy.y)) {
-                  
-                   collisionFound = true;
-                   break;
-               }
-           }
-
-
-           if (!collisionFound) {
-               safePlayerX = candidate.x;
-               safePlayerY = candidate.y;
-               isSafe = true;
-               break; // Found a safe spot, stop searching
-           }
-       }
-      
-       if (!isSafe) {
-           console.warn("Could not find a guaranteed safe starting position. Using original (potentially unsafe) location.");
-           safePlayerX = level.playerStart.x;
-           safePlayerY = level.playerStart.y;
-       }
-
-
-       // 3. Set player state based on the determined safe position
-       player.x = safePlayerX;
-       player.y = safePlayerY;
-       player.velX = 0;
-       player.velY = 0;
-       player.isDead = false;
-       player.isGravityUp = false;
-
-
-       updateHUD();
-       gameOverMessage.classList.add('hidden');
-   }
-
-
-   // Restart level after Game Over
-   function restartLevel() {
-       player.isDead = true;
-      
-       setTimeout(() => {
-           loadLevel(currentLevel);
-           gameState = 'playing';
-           gameOverMessage.classList.add('hidden');
-           player.isDead = false;
-
-
-           // Resume music on restart (if not muted)
-           if (gameMusic && !isMusicMuted) {
-               gameMusic.play().catch(e => console.warn('Audio could not be resumed on restart.'));
-           }
-       }, 1500);
-   }
-
-
-   // --- GAME LOOP & UPDATE ---
-
-   function gameLoop(timestamp) {
-       if (!gameLoopRunning) return;
-
-
-       const deltaTime = (timestamp - lastTime) / (1000 / 60);
-       lastTime = timestamp;
-
-
-       if (gameState === 'playing' && !player.isDead) {
-           update(deltaTime);
-           draw();
-       } else if (player.isDead || gameState === 'splash' || gameState === 'win' || gameState === 'gameOver') {
-           draw();
-       }
-
-
-       requestAnimationFrame(gameLoop);
-   }
-
-
-   function update(dt) {
-       const level = currentLevelData;
-
-
-       // Combined Acceleration: Gyro and Keyboard
-       const totalTilt = gyroTilt + keyboardTilt;
-
-
-       // 1. Gravity and Movement
-       const currentGravity = player.isGravityUp ? -gravity : gravity;
-       player.velY += currentGravity * dt;
-      
-       player.accelX = totalTilt * KEYBOARD_ACCEL_FACTOR;
-
-
-       player.velX += player.accelX * dt;
-       player.velX *= friction;
-      
-       if (Math.abs(player.velX) > player.maxSpeed) {
-           player.velX = Math.sign(player.velX) * player.maxSpeed;
-       }
-      
-       player.x += player.velX;
-       player.y += player.velY * dt;
-
-
-       // Y Boundary Check (Death zone below game area)
-       if (player.y + player.height > CANVAS_HEIGHT) {
-           handleCollision(player, 'boundary');
-           return;
-       }
-
-
-       // 2. Collisions
-       player.isGrounded = false;
-      
-       // Moving Platforms (Level-specific)
-       if (currentLevel === 3) {
-            level.platforms.filter(p => typeof p === 'object' && p.w).forEach(p => {
-               if (p.dx && p.minX !== undefined && p.maxX !== undefined) {
-                   p.x += p.dx * dt;
-                   if (p.x < p.minX) {
-                       p.dx = Math.abs(p.dx);
-                   } else if (p.x + p.w > p.maxX) {
-                       p.dx = -Math.abs(p.dx);
-                   }
-               }
-            });
-       }
-
-
-
-       const staticPlatforms = level.platforms.filter(p => Array.isArray(p));
-       const movingPlatforms = level.platforms.filter(p => typeof p === 'object' && p.w);
-
-
-       [...staticPlatforms, ...movingPlatforms].forEach(pDef => {
-           const p = Array.isArray(pDef) ?
-               { x: pDef[0], y: pDef[1], w: pDef[2], h: pDef[3] } :
-               { x: pDef.x, y: pDef.y, w: pDef.w, h: pDef.h };
-
-
-           if (player.x < p.x + p.w && player.x + player.width > p.x &&
-               player.y < p.y + p.h && player.y + player.height > p.y) {
-
-
-               const isFallingDown = player.velY > 0;
-               const isFallingUp = player.velY < 0;
-               const prevYBottom = player.y + player.height - (player.velY * dt);
-               const prevYTop = player.y - (player.velY * dt);
-
-
-               if (!player.isGravityUp) { // Gravity is DOWN
-                   if (isFallingDown && prevYBottom <= p.y) {
-                       player.y = p.y - player.height;
-                       player.velY = 0;
-                       player.isGrounded = true;
-                       if (!Array.isArray(pDef) && pDef.dx) { player.x += pDef.dx * dt; }
-                   }
-                   else if (isFallingUp && prevYTop >= p.y + p.h) {
-                       player.y = p.y + p.h;
-                       player.velY = 0;
-                   }
-               } else { // Gravity is UP
-                   if (isFallingUp && prevYTop >= p.y + p.h) {
-                       player.y = p.y + p.h;
-                       player.velY = 0;
-                       player.isGrounded = true;
-                       if (!Array.isArray(pDef) && pDef.dx) { player.x += pDef.dx * dt; }
-                   }
-                   else if (isFallingDown && prevYBottom <= p.y) {
-                       player.y = p.y - p.h;
-                       player.velY = 0;
-                   }
-               }
-
-
-               // Side collisions
-               const previousX = player.x - player.velX;
-               if (previousX + player.width <= p.x && player.x + player.width > p.x) {
-                   player.x = p.x - player.width;
-                   player.velX = 0;
-               } else if (previousX >= p.x + p.w && player.x < p.x + p.w) {
-                   player.x = p.x + p.w;
-                   player.velX = 0;
-               }
-           }
-       });
-
-
-
-       // 3. Item Collision
-       let itemsCollected = 0;
-       level.items.forEach(item => {
-           if (!item.collected) {
-               if (player.x < item.x + TILE_SIZE && player.x + player.width > item.x &&
-                   player.y < item.y + TILE_SIZE && player.y + player.height > item.y) {
-                   item.collected = true;
-               }
-           }
-           if (item.collected) itemsCollected++;
-       });
-       updateHUD(itemsCollected);
-
-
-       // 4. Enemy Update and Collision and Gyro Upspeed
-       level.enemies.forEach(enemy => {
-           if (!enemy.isVertical) {
-
-               const effectiveDx = enemy.dx + (gyroTilt * ENEMY_GYRO_INFLUENCE);
-               enemy.x += effectiveDx * dt * 1.5;
-              
-               // Boundary direction change
-               if (enemy.x < enemy.minX) {
-                   enemy.dx = Math.abs(enemy.dx);
-               } else if (enemy.x + TILE_SIZE > enemy.maxX) {
-                   enemy.dx = -Math.abs(enemy.dx);
-               }
-           }
-           else {
-               enemy.y += enemy.dy * dt * 1.5;
-               if (enemy.y < enemy.minY) {
-                   enemy.dy = Math.abs(enemy.dy);
-                   enemy.y = enemy.minY;
-               } else if (enemy.y + TILE_SIZE > enemy.maxY) {
-                   enemy.dy = -Math.abs(enemy.dy);
-                   enemy.y = enemy.maxY - TILE_SIZE;
-               }
-           }
-          
-           // Player-Enemy Collision (Death check)
-           if (player.x < enemy.x + TILE_SIZE && player.x + player.width > enemy.x &&
-               player.y < enemy.y + TILE_SIZE && player.y + player.height > enemy.y) {
-               handleCollision(player, 'enemy');
-           }
-       });
-
-
-       // 5. Exit Gate Logic
-       if (itemsCollected === REQUIRED_ITEMS) {
-           level.exit.open = true;
-           // Exit Area Check
-           if (player.x < level.exit.x + TILE_SIZE && player.x + player.width > level.exit.x &&
-               player.y < level.exit.y + TILE_SIZE * 2 && player.y + player.height > level.exit.y) {
-              
-               handleMusicPause();
-               loadLevel(currentLevel + 1);
-           }
-       }
-   }
-
-
-   // Drawing function
-   function draw() {
-       // Clear only the game area (below the HUD)
-       ctx.clearRect(0, HUD_HEIGHT, CANVAS_WIDTH, GAME_AREA_HEIGHT);
-      
-       // 1. Background: Draw background image starting at HUD_HEIGHT
-       if (assets.background && !assets.background.isFallback) {
-            // Draw the background from the start of the game area (Y=16) to the end (Y=282)
-           ctx.drawImage(assets.background,
-                         0, 0, CANVAS_WIDTH, GAME_AREA_HEIGHT,
-                         0, HUD_HEIGHT, CANVAS_WIDTH, GAME_AREA_HEIGHT);
-       } else {
-           ctx.fillStyle = '#111';
-           ctx.fillRect(0, HUD_HEIGHT, CANVAS_WIDTH, GAME_AREA_HEIGHT);
-       }
-
-
-       // Only draw game elements if not in splash/loading state
-       if (gameState !== 'loading' && gameState !== 'splash') {
-          
-           ctx.filter = 'grayscale(100%) contrast(150%)';
-           ctx.shadowBlur = 0; // Reset shadow for non-glowing elements
-
-
-           const level = currentLevelData;
-
-
-           // 2. Platforms (Walls/Corridors)
-           ctx.fillStyle = 'white';
-           const staticPlatforms = level.platforms.filter(p => Array.isArray(p));
-           const movingPlatforms = level.platforms.filter(p => typeof p === 'object' && p.w);
-
-
-           [...staticPlatforms, ...movingPlatforms].forEach(pDef => {
-               const p = Array.isArray(pDef) ? pDef : [pDef.x, pDef.y, pDef.w, pDef.h];
-               // Draw all platforms using their shifted Y-coordinate
-               ctx.fillRect(p[0], p[1], p[2], p[3]);
-           });
-
-
-           // 3. Items (Keycards)
-           level.items.forEach(item => {
-               if (!item.collected && assets.item) {
-                   const y = item.y;
-                   if (assets.item.isFallback) {
-                       ctx.fillStyle = 'red';
-                       ctx.fillRect(item.x, y, TILE_SIZE, TILE_SIZE);
-                   } else {
-                       ctx.drawImage(assets.item, item.x, y, TILE_SIZE, TILE_SIZE);
-                   }
-               }
-           });
-
-
-           // 4. Enemies
-           level.enemies.forEach(enemy => {
-               if (assets.enemy) {
-                   const y = enemy.y;
-                   if (assets.enemy.isFallback) {
-                       ctx.fillStyle = 'yellow';
-                       ctx.fillRect(enemy.x, y, TILE_SIZE, TILE_SIZE);
-                   } else {
-                       ctx.drawImage(assets.enemy, enemy.x, y, TILE_SIZE, TILE_SIZE);
-                   }
-               }
-           });
-
-
-           // 5. Exit Gate 
-           if (assets.exit) {
-               const y = level.exit.y;
-               const gateHeight = TILE_SIZE * 2;
-              
-               if (level.exit.open) {
-                   // Green Glow effect when open
-                   ctx.shadowColor = '#0f0';
-                   ctx.shadowBlur = 8;
-                  
-                   if (assets.exit.isFallback) {
-                       ctx.fillStyle = 'green';
-                       ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
-                   } else {
-                       // Draw image with glow
-                       ctx.drawImage(assets.exit, level.exit.x, y, TILE_SIZE, gateHeight);
-                   }
-                  
-                   
-                   ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
-                   ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
-                  
-               } else {
-                   ctx.shadowBlur = 0; 
-                   if (assets.exit.isFallback) {
-                       ctx.fillStyle = 'gray';
-                       ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
-                   } else {
-                       ctx.drawImage(assets.exit, level.exit.x, y, TILE_SIZE, gateHeight);
-                   }
-               }
-              
+    // --- CONFIGURATION & STATE ---
+    const CANVAS_WIDTH = 240;
+    const CANVAS_HEIGHT = 282;
+    const HUD_HEIGHT = 16;    
+    const GAME_AREA_HEIGHT = CANVAS_HEIGHT - HUD_HEIGHT;
+   
+    const NUM_LEVELS = 5; // Total number of levels
+    const REQUIRED_ITEMS = 8;
+    const TILE_SIZE = 8; // **WICHTIG: Platform-Kachelgröße bleibt 8x8**
+    const FIGURE_SIZE = 16; // **NEU: Player/Enemy-Größe auf 16x16**
+   
+    const START_SAFE_DISTANCE = 64; // Player must start at least 64px (8 tiles) away from any enemy
+
+
+    let gameState = 'loading';
+    let currentLevel = 0;
+    let lastTime = 0;
+    let gameLoopRunning = false;
+
+
+    // Gyro & Keyboard State
+    let gyroTilt = 0; // Wichtig: Wird durch das Gyroskop (r1-Hardware) gesetzt.
+    let keyboardTilt = 0;
+    const MAX_TILT_DEGREE = 20;
+    const KEYBOARD_ACCEL_FACTOR = 0.5;
+   
+    // HÖHERER WERT: Gegner reagieren stärker auf die Neigung des Geräts.
+    const ENEMY_GYRO_INFLUENCE = 1.5;
+   
+    let isMusicMuted = false; // State for music control
+
+
+    // Game Objects
+    const player = {
+        // Player-Größe auf FIGURE_SIZE anpassen
+        x: TILE_SIZE, y: TILE_SIZE * 5, width: FIGURE_SIZE, height: FIGURE_SIZE, 
+        velX: 0, velY: 0,
+        accelX: 0,
+        maxSpeed: 3,
+        isGrounded: false,
+        isDead: false,
+        isGravityUp: false
+    };
+
+
+    const gravity = 0.3;
+    const friction = 0.8;
+
+
+    // DOM Elements
+    const canvas = document.getElementById('gameCanvas');
+    const ctx = canvas.getContext('2d');
+    const loadingScreen = document.getElementById('loading-screen');
+    const loadingProgress = document.getElementById('loading-progress');
+    const splashScreen = document.getElementById('splash-screen');
+    const endScreen = document.getElementById('end-screen');
+    const gameOverMessage = document.getElementById('game-over-message');
+    const hudLevel = document.getElementById('hud-level');
+    const hudItems = document.getElementById('hud-items');
+    const hudMusic = document.getElementById('hud-music');
+   
+    // SVG Elements for Music Toggle
+    let soundWaves, muteSlash;
+
+
+    const splashImg = document.getElementById('splash-img');
+    const endImg = document.getElementById('end-img');
+   
+    // Assets and Audio
+    const assets = {};
+    const assetUrls = {
+        player: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-player.png',
+        background: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/spaceship-bg.png',
+        enemy: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/dalek.png',
+        item: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/keycard.png',
+        exit: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/exit.png',
+        splash: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/grav1tyman-splash.png',
+        end: 'https://raw.githubusercontent.com/atomlabor/grav1ty-man-v2/main/endscreen.png'
+    };
+    let audioContext, oscillator;
+    let gameMusic;
+
+
+    // --- LEVEL DEFINITIONS ---
+   
+    const originalLevelData = [
+        // Level 1: Beginner's Trap (Bottom Start)
+        {
+            platforms: [
+                [0, 258, 240, TILE_SIZE], // Floor (Y=266 - 8)
+                [0, 0, TILE_SIZE, 266], // Left Wall (Height 266)
+                [232, 0, TILE_SIZE, 266], // Right Wall (Height 266)
+               
+                // Platforms
+                [80, 184, 80, TILE_SIZE],
+                [160, 184, 72, TILE_SIZE],
+                [0, 124, 150, TILE_SIZE],
+                [180, 64, 52, TILE_SIZE],
+                [40, 64, 100, TILE_SIZE],
+                [0, 4, 40, TILE_SIZE] // Exit Platform (Y=4)
+            ],
+            items: [
+                { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false },
+                { x: 10, y: 176, collected: false }, { x: 220, y: 176, collected: false },
+                { x: 10, y: 116, collected: false }, { x: 160, y: 116, collected: false },
+                { x: 10, y: 56, collected: false }, { x: 220, y: 56, collected: false }
+            ],
+            enemies: [
+                { x: 90, y: 176, dx: 0.8, minX: 80, maxX: 152, minY: 0, isVertical: false, initialX: 90, initialY: 176 }
+            ],
+            exit: { x: 10, y: 0, open: false },
+            playerStart: { x: 120, y: 250 }, // START BOTTOM
+            title: "Beginner's Trap"
+        },
+        // Level 2: Vertical Drop (Bottom Start)
+        {
+            platforms: [
+                [0, 258, 240, TILE_SIZE],
+                [0, 0, TILE_SIZE, 266],
+                [232, 0, TILE_SIZE, 266],
+               
+                [40, 204, 160, TILE_SIZE],
+                [40, 144, 160, TILE_SIZE],
+                [40, 84, 160, TILE_SIZE],
+               
+                [210, 0, 22, TILE_SIZE],
+            ],
+            items: [
+                { x: 20, y: 250, collected: false }, { x: 220, y: 250, collected: false },
+                { x: 210, y: 196, collected: false }, { x: 50, y: 136, collected: false },
+                { x: 210, y: 76, collected: false }, { x: 50, y: 4, collected: false },
+                { x: 10, y: 136, collected: false }, { x: 220, y: 4, collected: false }
+            ],
+            enemies: [
+                { x: 120, y: 184, dy: 1.2, minY: 94, maxY: 194, isVertical: true, initialY: 184, initialX: 120 },
+                { x: 10, y: 250, dx: 1.5, minX: 8, maxX: 232, minY: 0, isVertical: false, initialX: 10, initialY: 250 }
+            ],
+            exit: { x: 210, y: 5, open: false },
+            playerStart: { x: 120, y: 250 }, // START BOTTOM
+            title: "Vertical Drop"
+        },
+        // Level 3: Central Shaft (Bottom Start) - FIXED FOR FLOW
+        {
+            platforms: [
+                [0, 258, 240, TILE_SIZE], // Floor
+                [0, 0, TILE_SIZE, 266], // Left Wall
+                [232, 0, TILE_SIZE, 266], // Right Wall
+               
+                // Platform 1 (Y=204): Lower split, 20px wide central gap
+                [0, 204, 110, TILE_SIZE], [130, 204, 110, TILE_SIZE],
+               
+                // Platform 2 (Y=144): Mid split, 20px wide central gap
+                [0, 144, 110, TILE_SIZE], [130, 144, 110, TILE_SIZE],
+               
+                // Platform 3 (Y=84): Upper split, 20px wide central gap
+                [0, 84, 110, TILE_SIZE], [130, 84, 110, TILE_SIZE],
+               
+                // Small platforms at the very top for item placement
+                [50, -4, 30, TILE_SIZE],
+                [160, -4, 30, TILE_SIZE],
+            ],
+            items: [
+                { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false }, // Floor
+                { x: 120, y: 196, collected: false }, // Above P1 gap
+                { x: 120, y: 136, collected: false }, // Above P2 gap 
+                { x: 10, y: 136, collected: false }, { x: 220, y: 136, collected: false }, // P2 side items
+                { x: 120, y: 76, collected: false }, // Above P3 gap
+                { x: 60, y: 4, collected: false }, // Top left platform
+                { x: 170, y: 4, collected: false } // Top right platform
+            ],
+            enemies: [
+                { x: 25, y: 250, dx: 0.5, minX: 10, maxX: 220, minY: 0, isVertical: false, initialX: 10, initialY: 250 },
+                // Vertical enemy in the central shaft
+                { x: 115, y: 134, dy: 1.5, minY: 94, maxY: 194, isVertical: true, initialY: 194, initialX: 115 }
+            ],
+            exit: { x: 115, y: 0, open: false }, // Central exit, accessible from the top gap
+            playerStart: { x: 220, y: 220 },
+            title: "Central Shaft"
+        },
+        // Level 4: Ceiling Start (Non-standard Start Position)
+        {
+            platforms: [
+                [0, 258, 240, TILE_SIZE], // Floor
+                [0, 0, TILE_SIZE, 266], // Left Wall
+                [232, 0, TILE_SIZE, 266], // Right Wall
+               
+                [40, 50, 80, TILE_SIZE], // Start Platform (around y=50)
+                [160, 100, 72, TILE_SIZE],
+                [0, 150, 100, TILE_SIZE],
+                [130, 200, 50, TILE_SIZE]
+            ],
+            items: [
+                { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false },
+                { x: 10, y: 192, collected: false }, { x: 170, y: 192, collected: false },
+                { x: 10, y: 42, collected: false }, { x: 160, y: 92, collected: false },
+                { x: 10, y: 142, collected: false }, { x: 220, y: 142, collected: false }
+            ],
+            enemies: [
+                // Vertical enemy moving far below the start point
+                { x: 120, y: 240, dy: 1.5, minY: 150, maxY: 250, isVertical: true, initialY: 240, initialX: 120 }
+            ],
+            exit: { x: 220, y: 4, open: false },
+            playerStart: { x: 60, y: 42 }, // START NEAR CEILING
+            title: "Ceiling Start"
+        },
+        // Level 5: Middle Start (Non-standard Start Position)
+        {
+            platforms: [
+                [0, 258, 240, TILE_SIZE], // Floor
+                [0, 0, TILE_SIZE, 266], // Left Wall
+                [232, 0, TILE_SIZE, 266], // Right Wall
+               
+                [0, 160, 220, TILE_SIZE], // Wide middle platform (y=160)
+                [50, 100, 140, TILE_SIZE],
+                [10, 40, 220, TILE_SIZE]
+            ],
+            items: [
+                { x: 10, y: 250, collected: false }, { x: 220, y: 250, collected: false },
+                { x: 10, y: 152, collected: false }, { x: 220, y: 152, collected: false },
+                { x: 10, y: 92, collected: false }, { x: 220, y: 92, collected: false },
+                { x: 10, y: 32, collected: false }, { x: 220, y: 32, collected: false }
+            ],
+            enemies: [
+                // Horizontal enemy on the middle platform
+                { x: 10, y: 152, dx: 1, minX: 10, maxX: 220, minY: 0, isVertical: false, initialX: 10, initialY: 152 },
+                // Vertical enemy above the start point
+                { x: 120, y: 92, dy: 1, minY: 50, maxY: 140, isVertical: true, initialY: 92, initialX: 120 }
+            ],
+            exit: { x: 120, y: 4, open: false },
+            playerStart: { x: 120, y: 152 }, // START MIDDLE
+            title: "Middle Start"
+        }
+    ];
+
+
+    let currentLevelData = [];
+
+
+    // --- FUNCTIONS ---
+   
+    // Utility function for distance calculation
+    function distance(x1, y1, x2, y2) {
+        return Math.hypot(x2 - x1, y2 - y1);
+    }
+
+
+    // Asset Loading
+    function loadAssets() {
+        const totalAssets = Object.keys(assetUrls).length;
+        let loadedCount = 0;
+       
+        soundWaves = document.getElementById('sound-waves');
+        muteSlash = document.getElementById('mute-slash');
+       
+        const handleAssetLoad = (key, img) => {
+            assets[key] = img;
+            loadedCount++;
+            loadingProgress.textContent = `${Math.round((loadedCount / totalAssets) * 100)}%`;
            
-               ctx.shadowBlur = 0;
-           }
-          
-           // 6. Player (Astronaut)
-           if (assets.player) {
-               ctx.save();
-              
-               if (player.isGravityUp) {
-                   ctx.scale(1, -1);
-                   const flippedY = -(player.y + player.height);
-                  
-                   if (assets.player.isFallback) {
-                       ctx.fillStyle = 'blue';
-                       ctx.fillRect(player.x, flippedY, player.width, player.height);
-                   } else {
-                       ctx.drawImage(assets.player, player.x, flippedY, player.width, player.height);
-                   }
-               } else {
-                   if (assets.player.isFallback) {
-                       ctx.fillStyle = 'blue';
-                       ctx.fillRect(player.x, player.y, player.width, player.height);
-                   } else {
-                       ctx.drawImage(assets.player, player.x, player.y, player.width, player.height);
-                   }
-               }
-               ctx.restore();
-           }
-          
-           ctx.filter = 'none';
-       }
-   }
+            if (loadedCount === totalAssets) {
+                setupAudio();
+               
+                if (!assets.splash.isFallback) splashImg.src = assets.splash.src;
+                if (!assets.end.isFallback) endImg.src = assets.end.src;
+               
+                loadingScreen.classList.add('hidden');
+                splashScreen.classList.remove('hidden');
+                gameState = 'splash';
+               
+             
+                if (isMusicMuted) {
+                    soundWaves.style.display = 'none';
+                    muteSlash.style.display = 'block';
+                } else {
+                    soundWaves.style.display = 'block';
+                    muteSlash.style.display = 'none';
+                }
+            }
+        };
 
 
-   function handleMusicPause() {
-       if (gameMusic) {
-           gameMusic.pause();
-       }
-   }
+        for (const key in assetUrls) {
+            const img = new Image();
+            img.crossOrigin = 'anonymous';
+            img.onload = () => handleAssetLoad(key, img);
+            img.onerror = () => {
+                console.error(`Error loading asset: ${assetUrls[key]}. Using fallback.`);
+                assets[key] = { src: assetUrls[key], isFallback: true };
+                handleAssetLoad(key, img);
+            };
+            img.src = assetUrls[key];
+        }
+    }
+   
+    // Audio Setup
+    const flipTune = [1000, 1500];
+    const noteDuration = 100;
+   
+    function setupAudio() {
+        try {
+            audioContext = new (window.AudioContext || window.webkitAudioContext)();
+        } catch (e) {
+            console.warn('Web Audio API is not supported.');
+        }
+        gameMusic = document.getElementById('game-music');
+    }
 
 
-   // Handle Collisions
-   function handleCollision(obj, type) {
-       if (obj.isDead) return;
-       obj.isDead = true;
-      
-       handleMusicPause(); 
+    function playNote(freq) {
+        if (!audioContext || audioContext.state === 'suspended' || isMusicMuted) return;
+        let oscillator = audioContext.createOscillator();
+        const gainNode = audioContext.createGain();
 
 
-       if (type === 'enemy' || type === 'boundary') {
-           gameState = 'gameOver';
-           gameOverMessage.classList.remove('hidden');
-           restartLevel();
-       }
-   }
+        oscillator.type = 'square';
+        oscillator.frequency.setValueAtTime(freq, audioContext.currentTime);
 
 
-   // Update HUD
-   function updateHUD(itemsCollected = 0) {
-       const level = currentLevelData.length > 0 ?
-                     originalLevelData[currentLevel] :
-                     { title: "grav1ty", items: [] };
-      
-       const collectedCount = itemsCollected || (level.items ? level.items.filter(i => i.collected).length : 0);
-      
-       hudLevel.textContent = `L${currentLevel + 1}: ${level.title.substring(0, 10)}`;
-      
-       const gravityStatus = player.isGravityUp ? "UP" : "DOWN";
-       hudItems.textContent = `G: ${gravityStatus} | KEY: ${collectedCount}/${REQUIRED_ITEMS}`;
+        gainNode.gain.setValueAtTime(0, audioContext.currentTime);
+        gainNode.gain.linearRampToValueAtTime(0.5, audioContext.currentTime + 0.01);
+        gainNode.gain.linearRampToValueAtTime(0.0, audioContext.currentTime + (noteDuration / 1000));
 
 
-       if (collectedCount === REQUIRED_ITEMS && level.exit && !level.exit.open) {
-           hudItems.textContent += " | EXIT!";
-       }
-   }
+        oscillator.connect(gainNode);
+        gainNode.connect(audioContext.destination);
 
 
- 
-   function startGame() {
-       if (gameState !== 'splash') return;
-      
-       if (audioContext && audioContext.state === 'suspended') {
-           audioContext.resume();
-       }
-      
-     
-       if (gameMusic && !isMusicMuted) {
-           gameMusic.volume = 0.6;
-           gameMusic.play().catch(e => console.warn('Audio playback failed.'));
-       }
-      
+        oscillator.start();
+        oscillator.stop(audioContext.currentTime + (noteDuration / 1000));
+    }
+   
+    function playFlipTune() {
+        if (isMusicMuted) return; // No sound effect if muted
+        if (!audioContext || audioContext.state === 'suspended') return;
+        flipTune.forEach((freq, index) => {
+            setTimeout(() => playNote(freq), index * 50);
+        });
+    }
 
-       splashScreen.classList.add('hidden');
-       gameState = 'playing';
-       loadLevel(0);
-      
 
-       if (!gameLoopRunning) {
-           gameLoopRunning = true;
-           lastTime = performance.now();
-           requestAnimationFrame(gameLoop);
-       }
-   }
+    // Toggle music mute/play state
+    function toggleMusic() {
+        if (!gameMusic) return;
+
+
+        isMusicMuted = !isMusicMuted;
+       
+        if (isMusicMuted) {
+            gameMusic.pause();
+            // Update SVG: Hide waves, show slash
+            if (soundWaves) soundWaves.style.display = 'none';
+            if (muteSlash) muteSlash.style.display = 'block';
+        } else {
+            // Only attempt to play if the game is active (not on splash)
+            if (gameState !== 'splash') {
+                // This ensures play() is called after a user interaction
+                gameMusic.play().catch(e => console.warn('Audio could not be started.'));
+            }
+            // Update SVG: Show waves, hide slash
+            if (soundWaves) soundWaves.style.display = 'block';
+            if (muteSlash) muteSlash.style.display = 'none';
+        }
+    }
+   
+    // Level Logic
+    function loadLevel(levelIndex) {
+        currentLevel = levelIndex;
+        if (currentLevel >= NUM_LEVELS) {
+            showEndScreen();
+            return;
+        }
+       
+        const original = originalLevelData[currentLevel];
+        // Deep clone to ensure enemies/items reset properly
+        let level = JSON.parse(JSON.stringify(original));
+        currentLevelData = level;
+
+
+        // ADD MANDATORY TOP BOUNDARY (CEILING)
+        level.platforms.push([0, 0, CANVAS_WIDTH, TILE_SIZE]);
+
+
+        // 1. Apply vertical shift (HUD_HEIGHT) to all game elements
+        level.platforms = level.platforms.map(p => {
+            if (Array.isArray(p)) {
+                return [p[0], p[1] + HUD_HEIGHT, p[2], p[3]];
+            } else {
+                p.y += HUD_HEIGHT;
+                if (p.minY !== undefined) p.minY += HUD_HEIGHT;
+                if (p.maxY !== undefined) p.maxY += HUD_HEIGHT;
+                return p;
+            }
+        });
+
+
+        level.items.forEach(item => { item.y += HUD_HEIGHT; });
+        level.exit.y += HUD_HEIGHT;
+        // Shift player start coordinates
+        level.playerStart.y += HUD_HEIGHT;
+
+
+        level.enemies.forEach(enemy => {
+            enemy.y += HUD_HEIGHT;
+            if (enemy.minY !== undefined) enemy.minY += HUD_HEIGHT;
+            if (enemy.maxY !== undefined) enemy.maxY += HUD_HEIGHT;
+        });
+
+
+        // 2. ENFORCE PLAYER START SAFETY
+        let safePlayerX = level.playerStart.x;
+        let safePlayerY = level.playerStart.y;
+        let isSafe = false;
+       
+        // Define candidate starting positions (original + slight shifts)
+        const candidates = [
+            { x: level.playerStart.x, y: level.playerStart.y }, // 1. Original spot
+            { x: level.playerStart.x + FIGURE_SIZE, y: level.playerStart.y }, // 2. One figure width right
+            { x: level.playerStart.x - FIGURE_SIZE, y: level.playerStart.y }, // 3. One figure width left
+            { x: level.playerStart.x, y: level.playerStart.y - FIGURE_SIZE }, // 4. One figure height up
+            { x: level.playerStart.x, y: level.playerStart.y + FIGURE_SIZE }, // 5. One figure height down
+        ];
+
+
+        for (const candidate of candidates) {
+            let collisionFound = false;
+           
+            // Check distance and overlap with all enemies
+            for (const enemy of level.enemies) {
+                const dist = distance(candidate.x, candidate.y, enemy.x, enemy.y);
+               
+                // Check proximity (64px distance) OR check if the enemy tile overlaps the candidate tile
+                if (dist < START_SAFE_DISTANCE ||
+                    (candidate.x < enemy.x + FIGURE_SIZE && candidate.x + player.width > enemy.x &&
+                     candidate.y < enemy.y + FIGURE_SIZE && candidate.y + player.height > enemy.y)) {
+                   
+                    collisionFound = true;
+                    break;
+                }
+            }
+
+
+            if (!collisionFound) {
+                safePlayerX = candidate.x;
+                safePlayerY = candidate.y;
+                isSafe = true;
+                break; // Found a safe spot, stop searching
+            }
+        }
+       
+        if (!isSafe) {
+            console.warn("Could not find a guaranteed safe starting position. Using original (potentially unsafe) location.");
+            safePlayerX = level.playerStart.x;
+            safePlayerY = level.playerStart.y;
+        }
+
+
+        // 3. Set player state based on the determined safe position
+        player.x = safePlayerX;
+        player.y = safePlayerY;
+        player.velX = 0;
+        player.velY = 0;
+        player.isDead = false;
+        player.isGravityUp = false;
+
+
+        updateHUD();
+        gameOverMessage.classList.add('hidden');
+    }
+
+
+    // Restart level after Game Over
+    function restartLevel() {
+        player.isDead = true;
+       
+        setTimeout(() => {
+            loadLevel(currentLevel);
+            gameState = 'playing';
+            gameOverMessage.classList.add('hidden');
+            player.isDead = false;
+
+
+            // Resume music on restart (if not muted)
+            if (gameMusic && !isMusicMuted) {
+                gameMusic.play().catch(e => console.warn('Audio could not be resumed on restart.'));
+            }
+        }, 1500);
+    }
+
+
+    // --- GAME LOOP & UPDATE ---
+
+    function gameLoop(timestamp) {
+        if (!gameLoopRunning) return;
+
+
+        const deltaTime = (timestamp - lastTime) / (1000 / 60);
+        lastTime = timestamp;
+
+
+        if (gameState === 'playing' && !player.isDead) {
+            update(deltaTime);
+            draw();
+        } else if (player.isDead || gameState === 'splash' || gameState === 'win' || gameState === 'gameOver') {
+            draw();
+        }
+
+
+        requestAnimationFrame(gameLoop);
+    }
+
+
+    function update(dt) {
+        const level = currentLevelData;
+
+
+        // Combined Acceleration: Gyro and Keyboard
+        const totalTilt = gyroTilt + keyboardTilt;
+
+
+        // 1. Gravity and Movement
+        const currentGravity = player.isGravityUp ? -gravity : gravity;
+        player.velY += currentGravity * dt;
+       
+        player.accelX = totalTilt * KEYBOARD_ACCEL_FACTOR;
+
+
+        player.velX += player.accelX * dt;
+        player.velX *= friction;
+       
+        if (Math.abs(player.velX) > player.maxSpeed) {
+            player.velX = Math.sign(player.velX) * player.maxSpeed;
+        }
+       
+        player.x += player.velX;
+        player.y += player.velY * dt;
+
+
+        // Y Boundary Check (Death zone below game area)
+        if (player.y + player.height > CANVAS_HEIGHT) {
+            handleCollision(player, 'boundary');
+            return;
+        }
+
+
+        // 2. Collisions
+        player.isGrounded = false;
+       
+        // Moving Platforms (Level-specific)
+        if (currentLevel === 3) {
+             level.platforms.filter(p => typeof p === 'object' && p.w).forEach(p => {
+                if (p.dx && p.minX !== undefined && p.maxX !== undefined) {
+                    p.x += p.dx * dt;
+                    if (p.x < p.minX) {
+                        p.dx = Math.abs(p.dx);
+                    } else if (p.x + p.w > p.maxX) {
+                        p.dx = -Math.abs(p.dx);
+                    }
+                }
+             });
+        }
+
+
+        const staticPlatforms = level.platforms.filter(p => Array.isArray(p));
+        const movingPlatforms = level.platforms.filter(p => typeof p === 'object' && p.w);
+
+
+        [...staticPlatforms, ...movingPlatforms].forEach(pDef => {
+            const p = Array.isArray(pDef) ?
+                { x: pDef[0], y: pDef[1], w: pDef[2], h: pDef[3] } :
+                { x: pDef.x, y: pDef.y, w: pDef.w, h: pDef.h };
+
+
+            if (player.x < p.x + p.w && player.x + player.width > p.x &&
+                player.y < p.y + p.h && player.y + player.height > p.y) {
+
+
+                const isFallingDown = player.velY > 0;
+                const isFallingUp = player.velY < 0;
+                const prevYBottom = player.y + player.height - (player.velY * dt);
+                const prevYTop = player.y - (player.velY * dt);
+
+
+                if (!player.isGravityUp) { // Gravity is DOWN
+                    if (isFallingDown && prevYBottom <= p.y) {
+                        player.y = p.y - player.height;
+                        player.velY = 0;
+                        player.isGrounded = true;
+                        if (!Array.isArray(pDef) && pDef.dx) { player.x += pDef.dx * dt; }
+                    }
+                    else if (isFallingUp && prevYTop >= p.y + p.h) {
+                        player.y = p.y + p.h;
+                        player.velY = 0;
+                    }
+                } else { // Gravity is UP
+                    if (isFallingUp && prevYTop >= p.y + p.h) {
+                        player.y = p.y + p.h;
+                        player.velY = 0;
+                        player.isGrounded = true;
+                        if (!Array.isArray(pDef) && pDef.dx) { player.x += pDef.dx * dt; }
+                    }
+                    else if (isFallingDown && prevYBottom <= p.y) {
+                        player.y = p.y - p.h;
+                        player.velY = 0;
+                    }
+                }
+
+
+                // Side collisions
+                const previousX = player.x - player.velX;
+                if (previousX + player.width <= p.x && player.x + player.width > p.x) {
+                    player.x = p.x - player.width;
+                    player.velX = 0;
+                } else if (previousX >= p.x + p.w && player.x < p.x + p.w) {
+                    player.x = p.x + p.w;
+                    player.velX = 0;
+                }
+            }
+        });
+
+
+        // 3. Item Collision
+        let itemsCollected = 0;
+        level.items.forEach(item => {
+            if (!item.collected) {
+                // Item collision check is TILE_SIZE (8x8)
+                if (player.x < item.x + TILE_SIZE && player.x + player.width > item.x &&
+                    player.y < item.y + TILE_SIZE && player.y + player.height > item.y) {
+                    item.collected = true;
+                }
+            }
+            if (item.collected) itemsCollected++;
+        });
+        updateHUD(itemsCollected);
+
+
+        // 4. Enemy Update and Collision and Gyro Upspeed
+        level.enemies.forEach(enemy => {
+            if (!enemy.isVertical) {
+
+                const effectiveDx = enemy.dx + (gyroTilt * ENEMY_GYRO_INFLUENCE);
+                enemy.x += effectiveDx * dt * 1.5;
+               
+                // Boundary direction change
+                if (enemy.x < enemy.minX) {
+                    enemy.dx = Math.abs(enemy.dx);
+                } else if (enemy.x + FIGURE_SIZE > enemy.maxX) { // Boundary check with new FIGURE_SIZE
+                    enemy.dx = -Math.abs(enemy.dx);
+                }
+            }
+            else {
+                enemy.y += enemy.dy * dt * 1.5;
+                if (enemy.y < enemy.minY) {
+                    enemy.dy = Math.abs(enemy.dy);
+                    enemy.y = enemy.minY;
+                } else if (enemy.y + FIGURE_SIZE > enemy.maxY) { // Boundary check with new FIGURE_SIZE
+                    enemy.dy = -Math.abs(enemy.dy);
+                    enemy.y = enemy.maxY - FIGURE_SIZE;
+                }
+            }
+           
+            // Player-Enemy Collision (Death check) - Collision is FIGURE_SIZE (16x16)
+            if (player.x < enemy.x + FIGURE_SIZE && player.x + player.width > enemy.x &&
+                player.y < enemy.y + FIGURE_SIZE && player.y + player.height > enemy.y) {
+                handleCollision(player, 'enemy');
+            }
+        });
+
+
+        // 5. Exit Gate Logic
+        if (itemsCollected === REQUIRED_ITEMS) {
+            level.exit.open = true;
+            // Exit Area Check - Still based on TILE_SIZE for exit gate size
+            if (player.x < level.exit.x + TILE_SIZE && player.x + player.width > level.exit.x &&
+                player.y < level.exit.y + TILE_SIZE * 2 && player.y + player.height > level.exit.y) {
+               
+                handleMusicPause();
+                loadLevel(currentLevel + 1);
+            }
+        }
+    }
+
+
+    // Drawing function
+    function draw() {
+        // Clear only the game area (below the HUD)
+        ctx.clearRect(0, HUD_HEIGHT, CANVAS_WIDTH, GAME_AREA_HEIGHT);
+       
+        // 1. Background: Draw background image starting at HUD_HEIGHT
+        if (assets.background && !assets.background.isFallback) {
+             // Draw the background from the start of the game area (Y=16) to the end (Y=282)
+            ctx.drawImage(assets.background,
+                          0, 0, CANVAS_WIDTH, GAME_AREA_HEIGHT,
+                          0, HUD_HEIGHT, CANVAS_WIDTH, GAME_AREA_HEIGHT);
+        } else {
+            ctx.fillStyle = '#111';
+            ctx.fillRect(0, HUD_HEIGHT, CANVAS_WIDTH, GAME_AREA_HEIGHT);
+        }
+
+
+        // Only draw game elements if not in splash/loading state
+        if (gameState !== 'loading' && gameState !== 'splash') {
+           
+            ctx.filter = 'grayscale(100%) contrast(150%)';
+            ctx.shadowBlur = 0; // Reset shadow for non-glowing elements
+
+
+            const level = currentLevelData;
+
+
+            // 2. Platforms (Walls/Corridors) - Nutzen TILE_SIZE=8 für das Layout
+            ctx.fillStyle = 'white';
+            const staticPlatforms = level.platforms.filter(p => Array.isArray(p));
+            const movingPlatforms = level.platforms.filter(p => typeof p === 'object' && p.w);
+
+
+            [...staticPlatforms, ...movingPlatforms].forEach(pDef => {
+                const p = Array.isArray(pDef) ? pDef : [pDef.x, pDef.y, pDef.w, pDef.h];
+                // Draw all platforms using their shifted Y-coordinate
+                ctx.fillRect(p[0], p[1], p[2], p[3]);
+            });
+
+
+            // 3. Items (Keycards) - Nutzen TILE_SIZE=8 für Items
+            level.items.forEach(item => {
+                if (!item.collected && assets.item) {
+                    const y = item.y;
+                    if (assets.item.isFallback) {
+                        ctx.fillStyle = 'red';
+                        ctx.fillRect(item.x, y, TILE_SIZE, TILE_SIZE);
+                    } else {
+                        ctx.drawImage(assets.item, item.x, y, TILE_SIZE, TILE_SIZE);
+                    }
+                }
+            });
+
+
+            // 4. Enemies - Nutzen FIGURE_SIZE=16 für Gegner
+            level.enemies.forEach(enemy => {
+                if (assets.enemy) {
+                    const y = enemy.y;
+                    if (assets.enemy.isFallback) {
+                        ctx.fillStyle = 'yellow';
+                        ctx.fillRect(enemy.x, y, FIGURE_SIZE, FIGURE_SIZE); // FIGURE_SIZE
+                    } else {
+                        // Enemy wird auf 16x16 gezeichnet
+                        ctx.drawImage(assets.enemy, enemy.x, y, FIGURE_SIZE, FIGURE_SIZE); 
+                    }
+                }
+            });
+
+
+            // 5. Exit Gate - Nutzen TILE_SIZE=8
+            if (assets.exit) {
+                const y = level.exit.y;
+                const gateHeight = TILE_SIZE * 2;
+               
+                if (level.exit.open) {
+                    // Green Glow effect when open
+                    ctx.shadowColor = '#0f0';
+                    ctx.shadowBlur = 8;
+                   
+                    if (assets.exit.isFallback) {
+                        ctx.fillStyle = 'green';
+                        ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
+                    } else {
+                        // Draw image with glow
+                        ctx.drawImage(assets.exit, level.exit.x, y, TILE_SIZE, gateHeight);
+                    }
+                   
+                    
+                    ctx.fillStyle = 'rgba(0, 255, 0, 0.5)';
+                    ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
+                   
+                } else {
+                    ctx.shadowBlur = 0; 
+                    if (assets.exit.isFallback) {
+                        ctx.fillStyle = 'gray';
+                        ctx.fillRect(level.exit.x, y, TILE_SIZE, gateHeight);
+                    } else {
+                        ctx.drawImage(assets.exit, level.exit.x, y, TILE_SIZE, gateHeight);
+                    }
+                }
+               
+            
+                ctx.shadowBlur = 0;
+            }
+           
+            // 6. Player (Astronaut) - Nutzen FIGURE_SIZE=16
+            if (assets.player) {
+                ctx.save();
+               
+                if (player.isGravityUp) {
+                    ctx.scale(1, -1);
+                    const flippedY = -(player.y + player.height);
+                   
+                    if (assets.player.isFallback) {
+                        ctx.fillStyle = 'blue';
+                        ctx.fillRect(player.x, flippedY, player.width, player.height);
+                    } else {
+                        // Player wird auf 16x16 gezeichnet
+                        ctx.drawImage(assets.player, player.x, flippedY, player.width, player.height);
+                    }
+                } else {
+                    if (assets.player.isFallback) {
+                        ctx.fillStyle = 'blue';
+                        ctx.fillRect(player.x, player.y, player.width, player.height);
+                    } else {
+                        // Player wird auf 16x16 gezeichnet
+                        ctx.drawImage(assets.player, player.x, player.y, player.width, player.height);
+                    }
+                }
+                ctx.restore();
+            }
+           
+            ctx.filter = 'none';
+        }
+    }
+
+
+    function handleMusicPause() {
+        if (gameMusic) {
+            gameMusic.pause();
+        }
+    }
+
+
+    // Handle Collisions
+    function handleCollision(obj, type) {
+        if (obj.isDead) return;
+        obj.isDead = true;
+       
+        handleMusicPause(); 
+
+
+        if (type === 'enemy' || type === 'boundary') {
+            gameState = 'gameOver';
+            gameOverMessage.classList.remove('hidden');
+            restartLevel();
+        }
+    }
+
+
+    // Update HUD
+    function updateHUD(itemsCollected = 0) {
+        const level = currentLevelData.length > 0 ?
+                      originalLevelData[currentLevel] :
+                      { title: "grav1ty", items: [] };
+       
+        const collectedCount = itemsCollected || (level.items ? level.items.filter(i => i.collected).length : 0);
+       
+        hudLevel.textContent = `L${currentLevel + 1}: ${level.title.substring(0, 10)}`;
+       
+        const gravityStatus = player.isGravityUp ? "UP" : "DOWN";
+        hudItems.textContent = `G: ${gravityStatus} | KEY: ${collectedCount}/${REQUIRED_ITEMS}`;
+
+
+        if (collectedCount === REQUIRED_ITEMS && level.exit && !level.exit.open) {
+            hudItems.textContent += " | EXIT!";
+        }
+    }
+
+
   
-   function showEndScreen() {
-       handleMusicPause();
-       gameState = 'win';
-       endScreen.classList.remove('hidden');
-   }
-  
-   // --- CONTROL LOGIC: TOUCH/CLICK/KEYBOARD ---
-   // Function to handle click and touch identically (for gravity flip)
-   function flipGravity(event) {
-       if (gameState !== 'playing' || player.isDead) return;
+    function startGame() {
+        if (gameState !== 'splash') return;
+       
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+       
       
-       let tapY;
-      
-       if (event.touches) {
-           tapY = event.touches[0].clientY;
-           event.preventDefault();
-       } else {
-           tapY = event.clientY;
-       }
-      
-       if (tapY >= HUD_HEIGHT) {
-           player.isGravityUp = !player.isGravityUp;
-           player.velY = 0;
-           playFlipTune();
-           updateHUD();
-       }
-   }
+        if (gameMusic && !isMusicMuted) {
+            gameMusic.volume = 0.6;
+            gameMusic.play().catch(e => console.warn('Audio playback failed.'));
+        }
+       
+
+        splashScreen.classList.add('hidden');
+        gameState = 'playing';
+        loadLevel(0);
+       
+
+        if (!gameLoopRunning) {
+            gameLoopRunning = true;
+            lastTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        }
+    }
+   
+    function showEndScreen() {
+        handleMusicPause();
+        gameState = 'win';
+        endScreen.classList.remove('hidden');
+    }
+   
+    // --- CONTROL LOGIC: TOUCH/CLICK/KEYBOARD ---
+    // Function to handle click and touch identically (for gravity flip)
+    function flipGravity(event) {
+        if (gameState !== 'playing' || player.isDead) return;
+       
+        let tapY;
+       
+        if (event.touches) {
+            tapY = event.touches[0].clientY;
+            event.preventDefault();
+        } else {
+            tapY = event.clientY;
+        }
+       
+        if (tapY >= HUD_HEIGHT) {
+            player.isGravityUp = !player.isGravityUp;
+            player.velY = 0;
+            playFlipTune();
+            updateHUD();
+        }
+    }
 
 
-   // Gyroscope Logic (Horizontal Movement)
-   function handleGyro(event) {
-       if (gameState !== 'playing') return;
+    // Gyroscope Logic (Horizontal Movement)
+    function handleGyro(event) {
+        if (gameState !== 'playing') return;
 
 
-  
-       let gamma = event.gamma;
-      
-       if (gamma < -MAX_TILT_DEGREE) {
-           gamma = -MAX_TILT_DEGREE;
-       } else if (gamma > MAX_TILT_DEGREE) {
-           gamma = MAX_TILT_DEGREE;
-       }
+   
+        let gamma = event.gamma;
+       
+        if (gamma < -MAX_TILT_DEGREE) {
+            gamma = -MAX_TILT_DEGREE;
+        } else if (gamma > MAX_TILT_DEGREE) {
+            gamma = MAX_TILT_DEGREE;
+        }
 
 
-       // Normalisiere den Neigungswert auf einen Bereich von -1 bis 1.
-       gyroTilt = gamma / MAX_TILT_DEGREE;
-   }
-  
-   // Keyboard Events for movement and gravity flip (for desktop testing)
-   function handleKeydown(event) {
-       if (gameState !== 'playing') return;
-      
-       switch (event.code) {
-           case 'ArrowLeft':
-               keyboardTilt = -1;
-               event.preventDefault();
-               break;
-           case 'ArrowRight':
-               keyboardTilt = 1;
-               event.preventDefault();
-               break;
-           case 'Space':
-              
-               flipGravity({ clientY: HUD_HEIGHT + 1 });
-               event.preventDefault();
-               break;
-           case 'KeyM': // 'M' for Mute/Unmute
-               toggleMusic();
-               break;
-       }
-   }
+        // Normalisiere den Neigungswert auf einen Bereich von -1 bis 1.
+        gyroTilt = gamma / MAX_TILT_DEGREE;
+    }
+   
+    // Keyboard Events for movement and gravity flip (for desktop testing)
+    function handleKeydown(event) {
+        if (gameState !== 'playing') return;
+       
+        switch (event.code) {
+            case 'ArrowLeft':
+                keyboardTilt = -1;
+                event.preventDefault();
+                break;
+            case 'ArrowRight':
+                keyboardTilt = 1;
+                event.preventDefault();
+                break;
+            case 'Space':
+               
+                flipGravity({ clientY: HUD_HEIGHT + 1 });
+                event.preventDefault();
+                break;
+            case 'KeyM': // 'M' for Mute/Unmute
+                toggleMusic();
+                break;
+        }
+    }
 
 
-   function handleKeyup(event) {
-       if (gameState !== 'playing') return;
-      
-       switch (event.code) {
-           case 'ArrowLeft':
-           case 'ArrowRight':
-               keyboardTilt = 0;
-               break;
-       }
-   }
-
-
-
-
-   // --- INITIALIZATION ---
-
-
-   // Gyroscope listener
-   // DIESER LISTENER REGISTRIERT DIE GERÄTENEIGUNG UND WIRD DURCH DAS RABBIT r1-SYSTEM BEREITGESTELLT.
-   window.addEventListener('deviceorientation', handleGyro, true);
-
-
-   // Tap/Click Listener for Gravity Flip (Touchscreen and mouse click)
-   canvas.addEventListener('click', flipGravity, false);
-   // Dies fängt die Berührungserkennung auf dem r1-Touchscreen ab.
-   canvas.addEventListener('touchstart', flipGravity, { passive: false });
-  
-   // Keyboard listeners for desktop control
-   window.addEventListener('keydown', handleKeydown, false);
-   window.addEventListener('keyup', handleKeyup, false);
+    function handleKeyup(event) {
+        if (gameState !== 'playing') return;
+       
+        switch (event.code) {
+            case 'ArrowLeft':
+            case 'ArrowRight':
+                keyboardTilt = 0;
+                break;
+        }
+    }
 
 
 
 
-   loadAssets();
-   gameLoopRunning = true;
-   requestAnimationFrame(gameLoop);
+    // --- INITIALIZATION ---
+
+
+    // Gyroscope listener
+    // DIESER LISTENER REGISTRIERT DIE GERÄTENEIGUNG UND WIRD DURCH DAS RABBIT r1-SYSTEM BEREITGESTELLT.
+    window.addEventListener('deviceorientation', handleGyro, true);
+
+
+    // Tap/Click Listener for Gravity Flip (Touchscreen and mouse click)
+    canvas.addEventListener('click', flipGravity, false);
+    // Dies fängt die Berührungserkennung auf dem r1-Touchscreen ab.
+    canvas.addEventListener('touchstart', flipGravity, { passive: false });
+   
+    // Keyboard listeners for desktop control
+    window.addEventListener('keydown', handleKeydown, false);
+    window.addEventListener('keyup', handleKeyup, false);
+
+
+
+
+    loadAssets();
+    gameLoopRunning = true;
+    requestAnimationFrame(gameLoop);
 
 
 </script>
@@ -1227,4 +1221,3 @@
 
 </body>
 </html>
-
