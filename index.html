@@ -346,15 +346,15 @@
             items: [
                 { x: 20, y: 250, collected: false }, { x: 220, y: 250, collected: false },
                 { x: 210, y: 196, collected: false }, { x: 50, y: 136, collected: false },
-                { x: 210, y: 76, collected: false }, { x: 50, y: 4, collected: false },
-                { x: 10, y: 136, collected: false }, { x: 220, y: 4, collected: false }
+                { x: 210, y: 76, collected: false }, { x: 50, y: 8, collected: false },
+                { x: 10, y: 136, collected: false }, { x: 220, y: 8, collected: false }
             ],
             enemies: [
                 { x: 120, y: 184, dy: 1.2, minY: 94, maxY: 194, isVertical: true, initialY: 184, initialX: 120 },
                 { x: 10, y: 250, dx: 1.5, minX: 8, maxX: 232, minY: 0, isVertical: false, initialX: 10, initialY: 250 }
             ],
-            exit: { x: 210, y: 5, open: false },
-            playerStart: { x: 120, y: 250 }, // START BOTTOM
+            exit: { x: 210, y: 8, open: false },
+            playerStart: { x: 120, y: 150 }, // START BOTTOM
             title: "Vertical Drop"
         },
         // Level 3: Central Shaft (Bottom Start) - FIXED FOR FLOW
@@ -365,7 +365,7 @@
                 [232, 0, TILE_SIZE, 266], // Right Wall
                
                 // Platform 1 (Y=204): Lower split, 20px wide central gap
-                [0, 204, 110, TILE_SIZE], [130, 204, 110, TILE_SIZE],
+                [0, 204, 120, TILE_SIZE], [140, 204, 110, TILE_SIZE],
                
                 // Platform 2 (Y=144): Mid split, 20px wide central gap
                 [0, 144, 100, TILE_SIZE], [130, 144, 110, TILE_SIZE],
@@ -392,7 +392,7 @@
                 { x: 115, y: 120, dy: 0.5, minY: 94, maxY: 194, isVertical: true, initialY: 194, initialX: 115 }
             ],
             exit: { x: 115, y: 8, open: false }, // Central exit, accessible from the top gap
-            playerStart: { x: 220, y: 120 },
+            playerStart: { x: 200, y: 120 },
             title: "Central Shaft"
         },
         // Level 4: Ceiling Start (Non-standard Start Position)
