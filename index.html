@@ -223,9 +223,9 @@
    
     const NUM_LEVELS = 5; // Total number of levels
     const REQUIRED_ITEMS = 8;
-    const TILE_SIZE = 8; // **WICHTIG: Platform-Kachelgröße bleibt 8x8**
-    const FIGURE_SIZE = 16; // **NEU: Player/Enemy-Größe auf 16x16**
-    const Y_FIGURE_OFFSET = FIGURE_SIZE - TILE_SIZE; // **NEU: 8 Pixel Korrektur für Figuren-Y-Position**
+    const TILE_SIZE = 8; // **Plattform-Kachelgröße bleibt 8x8**
+    const FIGURE_SIZE = 16; // **NEU: Player/Enemy-Größe ist 16x16**
+    const Y_FIGURE_OFFSET = FIGURE_SIZE - TILE_SIZE; // **NEU: 8 Pixel Korrektur, damit Figuren auf der Plattform stehen**
    
     const START_SAFE_DISTANCE = 64; // Player must start at least 64px (8 tiles) away from any enemy
 
@@ -250,7 +250,7 @@
 
     // Game Objects
     const player = {
-        // Player-Größe auf FIGURE_SIZE anpassen
+        // Player-Größe auf FIGURE_SIZE (16x16) anpassen
         x: TILE_SIZE, y: TILE_SIZE * 5, width: FIGURE_SIZE, height: FIGURE_SIZE, 
         velX: 0, velY: 0,
         accelX: 0,
@@ -482,7 +482,7 @@
                 if (!assets.end.isFallback) endImg.src = assets.end.src;
                
                 loadingScreen.classList.add('hidden');
-                splashScreen.classList.remove('hidden');
+                splashScreen.classList.remove('hidden'); // Splash Screen wird jetzt angezeigt
                 gameState = 'splash';
                
              
@@ -503,6 +503,7 @@
             img.onload = () => handleAssetLoad(key, img);
             img.onerror = () => {
                 console.error(`Error loading asset: ${assetUrls[key]}. Using fallback.`);
+                // Fallback implementation to prevent crashes if images fail to load
                 assets[key] = { src: assetUrls[key], isFallback: true };
                 handleAssetLoad(key, img);
             };
@@ -598,7 +599,7 @@
         level.platforms.push([0, 0, CANVAS_WIDTH, TILE_SIZE]);
 
 
-        // 1. Apply vertical shift (HUD_HEIGHT) to all game elements
+        // 1. Apply vertical shift (HUD_HEIGHT) to ALL game elements (level design)
         level.platforms = level.platforms.map(p => {
             if (Array.isArray(p)) {
                 return [p[0], p[1] + HUD_HEIGHT, p[2], p[3]];
@@ -613,22 +614,22 @@
 
         level.items.forEach(item => { item.y += HUD_HEIGHT; });
         level.exit.y += HUD_HEIGHT;
-       
-        // Shift player start coordinates (HUD shift first)
-        level.playerStart.y += HUD_HEIGHT;
-       
-        // **KORREKTUR für 16x16 Figuren-Größe relativ zum 8x8 Plattform-Raster**
-        // Die Figuren müssen 8 Pixel nach oben (Y-Koordinate verkleinern),
-        // damit ihr unterer Rand auf der Plattform liegt und nicht darin.
-        level.playerStart.y -= Y_FIGURE_OFFSET;
+        level.playerStart.y += HUD_HEIGHT; // Initial HUD shift
 
 
         level.enemies.forEach(enemy => {
             enemy.y += HUD_HEIGHT;
             if (enemy.minY !== undefined) enemy.minY += HUD_HEIGHT;
             if (enemy.maxY !== undefined) enemy.maxY += HUD_HEIGHT;
-           
-            // **KORREKTUR für 16x16 Figuren-Größe**
+        });
+
+
+        // 2. APPLY FIGURE SIZE OFFSET (CORRECTION for 16x16 figures on 8x8 grid)
+        // Shift figures 8 pixels (Y_FIGURE_OFFSET) UP so their bottom edge is on the platform (y - 8).
+        level.playerStart.y -= Y_FIGURE_OFFSET;
+
+
+        level.enemies.forEach(enemy => {
             enemy.y -= Y_FIGURE_OFFSET;
             enemy.initialY -= Y_FIGURE_OFFSET;
             if (enemy.minY !== undefined) enemy.minY -= Y_FIGURE_OFFSET;
@@ -636,12 +637,12 @@
         });
 
 
-        // 2. ENFORCE PLAYER START SAFETY
+        // 3. ENFORCE PLAYER START SAFETY
         let safePlayerX = level.playerStart.x;
         let safePlayerY = level.playerStart.y;
         let isSafe = false;
        
-        // Define candidate starting positions (original + slight shifts)
+        // Define candidate starting positions (original + slight shifts) - NUTZT NEUE FIGURE_SIZE
         const candidates = [
             { x: level.playerStart.x, y: level.playerStart.y }, // 1. Original spot
             { x: level.playerStart.x + FIGURE_SIZE, y: level.playerStart.y }, // 2. One figure width right
@@ -654,7 +655,7 @@
         for (const candidate of candidates) {
             let collisionFound = false;
            
-            // Check distance and overlap with all enemies
+            // Check distance and overlap with all enemies - NUTZT NEUE FIGURE_SIZE
             for (const enemy of level.enemies) {
                 const dist = distance(candidate.x, candidate.y, enemy.x, enemy.y);
                
@@ -684,7 +685,7 @@
         }
 
 
-        // 3. Set player state based on the determined safe position
+        // 4. Set player state based on the determined safe position
         player.x = safePlayerX;
         player.y = safePlayerY;
         player.velX = 0;
@@ -870,10 +871,10 @@
                 const effectiveDx = enemy.dx + (gyroTilt * ENEMY_GYRO_INFLUENCE);
                 enemy.x += effectiveDx * dt * 1.5;
                
-                // Boundary direction change
+                // Boundary direction change - NEU: FIGURE_SIZE
                 if (enemy.x < enemy.minX) {
                     enemy.dx = Math.abs(enemy.dx);
-                } else if (enemy.x + FIGURE_SIZE > enemy.maxX) { // Boundary check with new FIGURE_SIZE
+                } else if (enemy.x + FIGURE_SIZE > enemy.maxX) { 
                     enemy.dx = -Math.abs(enemy.dx);
                 }
             }
@@ -882,13 +883,13 @@
                 if (enemy.y < enemy.minY) {
                     enemy.dy = Math.abs(enemy.dy);
                     enemy.y = enemy.minY;
-                } else if (enemy.y + FIGURE_SIZE > enemy.maxY) { // Boundary check with new FIGURE_SIZE
+                } else if (enemy.y + FIGURE_SIZE > enemy.maxY) { // NEU: FIGURE_SIZE
                     enemy.dy = -Math.abs(enemy.dy);
-                    enemy.y = enemy.maxY - FIGURE_SIZE;
+                    enemy.y = enemy.maxY - FIGURE_SIZE; // NEU: FIGURE_SIZE
                 }
             }
            
-            // Player-Enemy Collision (Death check) - Collision is FIGURE_SIZE (16x16)
+            // Player-Enemy Collision (Death check) - NEU: FIGURE_SIZE für den Gegner-Hitbox
             if (player.x < enemy.x + FIGURE_SIZE && player.x + player.width > enemy.x &&
                 player.y < enemy.y + FIGURE_SIZE && player.y + player.height > enemy.y) {
                 handleCollision(player, 'enemy');
@@ -970,10 +971,10 @@
                     const y = enemy.y;
                     if (assets.enemy.isFallback) {
                         ctx.fillStyle = 'yellow';
-                        ctx.fillRect(enemy.x, y, FIGURE_SIZE, FIGURE_SIZE); // FIGURE_SIZE
+                        ctx.fillRect(enemy.x, y, FIGURE_SIZE, FIGURE_SIZE); // NEU: FIGURE_SIZE
                     } else {
                         // Enemy wird auf 16x16 gezeichnet
-                        ctx.drawImage(assets.enemy, enemy.x, y, FIGURE_SIZE, FIGURE_SIZE); 
+                        ctx.drawImage(assets.enemy, enemy.x, y, FIGURE_SIZE, FIGURE_SIZE); // NEU: FIGURE_SIZE
                     }
                 }
             });
@@ -1015,9 +1016,222 @@
                 ctx.shadowBlur = 0;
             }
            
-            // 6. Player (Astronaut) - Nutzen FIGURE_SIZE=16
+            // 6. Player (Astronaut) - Nutzt FIGURE_SIZE=16 (über player.width/height)
             if (assets.player) {
                 ctx.save();
                
                 if (player.isGravityUp) {
                     ctx.scale(1, -1);
+                    const flippedY = -(player.y + player.height);
+                   
+                    if (assets.player.isFallback) {
+                        ctx.fillStyle = 'blue';
+                        ctx.fillRect(player.x, flippedY, player.width, player.height);
+                    } else {
+                        // Player wird auf 16x16 gezeichnet
+                        ctx.drawImage(assets.player, player.x, flippedY, player.width, player.height);
+                    }
+                } else {
+                    if (assets.player.isFallback) {
+                        ctx.fillStyle = 'blue';
+                        ctx.fillRect(player.x, player.y, player.width, player.height);
+                    } else {
+                        // Player wird auf 16x16 gezeichnet
+                        ctx.drawImage(assets.player, player.x, player.y, player.width, player.height);
+                    }
+                }
+                ctx.restore();
+            }
+           
+            ctx.filter = 'none';
+        }
+    }
+
+
+    function handleMusicPause() {
+        if (gameMusic) {
+            gameMusic.pause();
+        }
+    }
+
+
+    // Handle Collisions
+    function handleCollision(obj, type) {
+        if (obj.isDead) return;
+        obj.isDead = true;
+       
+        handleMusicPause(); 
+
+
+        if (type === 'enemy' || type === 'boundary') {
+            gameState = 'gameOver';
+            gameOverMessage.classList.remove('hidden');
+            restartLevel();
+        }
+    }
+
+
+    // Update HUD
+    function updateHUD(itemsCollected = 0) {
+        const level = currentLevelData.length > 0 ?
+                      originalLevelData[currentLevel] :
+                      { title: "grav1ty", items: [] };
+       
+        const collectedCount = itemsCollected || (level.items ? level.items.filter(i => i.collected).length : 0);
+       
+        hudLevel.textContent = `L${currentLevel + 1}: ${level.title.substring(0, 10)}`;
+       
+        const gravityStatus = player.isGravityUp ? "UP" : "DOWN";
+        hudItems.textContent = `G: ${gravityStatus} | KEY: ${collectedCount}/${REQUIRED_ITEMS}`;
+
+
+        if (collectedCount === REQUIRED_ITEMS && level.exit && !level.exit.open) {
+            hudItems.textContent += " | EXIT!";
+        }
+    }
+
+
+  
+    function startGame() {
+        if (gameState !== 'splash') return;
+       
+        if (audioContext && audioContext.state === 'suspended') {
+            audioContext.resume();
+        }
+       
+      
+        if (gameMusic && !isMusicMuted) {
+            gameMusic.volume = 0.6;
+            gameMusic.play().catch(e => console.warn('Audio playback failed.'));
+        }
+       
+
+        splashScreen.classList.add('hidden');
+        gameState = 'playing';
+        loadLevel(0);
+       
+
+        if (!gameLoopRunning) {
+            gameLoopRunning = true;
+            lastTime = performance.now();
+            requestAnimationFrame(gameLoop);
+        }
+    }
+   
+    function showEndScreen() {
+        handleMusicPause();
+        gameState = 'win';
+        endScreen.classList.remove('hidden');
+    }
+   
+    // --- CONTROL LOGIC: TOUCH/CLICK/KEYBOARD ---
+    // Function to handle click and touch identically (for gravity flip)
+    function flipGravity(event) {
+        if (gameState !== 'playing' || player.isDead) return;
+       
+        let tapY;
+       
+        if (event.touches) {
+            tapY = event.touches[0].clientY;
+            event.preventDefault();
+        } else {
+            tapY = event.clientY;
+        }
+       
+        if (tapY >= HUD_HEIGHT) {
+            player.isGravityUp = !player.isGravityUp;
+            player.velY = 0;
+            playFlipTune();
+            updateHUD();
+        }
+    }
+
+
+    // Gyroscope Logic (Horizontal Movement)
+    function handleGyro(event) {
+        if (gameState !== 'playing') return;
+
+
+   
+        let gamma = event.gamma;
+       
+        if (gamma < -MAX_TILT_DEGREE) {
+            gamma = -MAX_TILT_DEGREE;
+        } else if (gamma > MAX_TILT_DEGREE) {
+            gamma = MAX_TILT_DEGREE;
+        }
+
+
+        // Normalisiere den Neigungswert auf einen Bereich von -1 bis 1.
+        gyroTilt = gamma / MAX_TILT_DEGREE;
+    }
+   
+    // Keyboard Events for movement and gravity flip (for desktop testing)
+    function handleKeydown(event) {
+        if (gameState !== 'playing') return;
+       
+        switch (event.code) {
+            case 'ArrowLeft':
+                keyboardTilt = -1;
+                event.preventDefault();
+                break;
+            case 'ArrowRight':
+                keyboardTilt = 1;
+                event.preventDefault();
+                break;
+            case 'Space':
+               
+                flipGravity({ clientY: HUD_HEIGHT + 1 });
+                event.preventDefault();
+                break;
+            case 'KeyM': // 'M' for Mute/Unmute
+                toggleMusic();
+                break;
+        }
+    }
+
+
+    function handleKeyup(event) {
+        if (gameState !== 'playing') return;
+       
+        switch (event.code) {
+            case 'ArrowLeft':
+            case 'ArrowRight':
+                keyboardTilt = 0;
+                break;
+        }
+    }
+
+
+
+
+    // --- INITIALIZATION ---
+
+
+    // Gyroscope listener
+    // DIESER LISTENER REGISTRIERT DIE GERÄTENEIGUNG UND WIRD DURCH DAS RABBIT r1-SYSTEM BEREITGESTELLT.
+    window.addEventListener('deviceorientation', handleGyro, true);
+
+
+    // Tap/Click Listener for Gravity Flip (Touchscreen and mouse click)
+    canvas.addEventListener('click', flipGravity, false);
+    // Dies fängt die Berührungserkennung auf dem r1-Touchscreen ab.
+    canvas.addEventListener('touchstart', flipGravity, { passive: false });
+   
+    // Keyboard listeners for desktop control
+    window.addEventListener('keydown', handleKeydown, false);
+    window.addEventListener('keyup', handleKeyup, false);
+
+
+
+
+    loadAssets();
+    gameLoopRunning = true;
+    requestAnimationFrame(gameLoop);
+
+
+</script>
+
+
+</body>
+</html>
