@@ -246,7 +246,7 @@
    const MAX_TILT_DEGREE = 20;
    const KEYBOARD_ACCEL_FACTOR = 0.5;
   
-   // HÖHERER WERT: Gegner reagieren stärker auf die Neigung des Geräts.
+   // HÃ–HERER WERT: Gegner reagieren stÃ¤rker auf die Neigung des GerÃ¤ts.
    const ENEMY_GYRO_INFLUENCE = 1.5;
   
    let isMusicMuted = false; // State for music control
@@ -1201,13 +1201,13 @@
 
 
    // Gyroscope listener
-   // DIESER LISTENER REGISTRIERT DIE GERÄTENEIGUNG UND WIRD DURCH DAS RABBIT r1-SYSTEM BEREITGESTELLT.
+   // DIESER LISTENER REGISTRIERT DIE GERÃ„TENEIGUNG UND WIRD DURCH DAS RABBIT r1-SYSTEM BEREITGESTELLT.
    window.addEventListener('deviceorientation', handleGyro, true);
 
 
    // Tap/Click Listener for Gravity Flip (Touchscreen and mouse click)
    canvas.addEventListener('click', flipGravity, false);
-   // Dies fängt die Berührungserkennung auf dem r1-Touchscreen ab.
+   // Dies fÃ¤ngt die BerÃ¼hrungserkennung auf dem r1-Touchscreen ab.
    canvas.addEventListener('touchstart', flipGravity, { passive: false });
   
    // Keyboard listeners for desktop control
