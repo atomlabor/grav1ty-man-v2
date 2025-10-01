@@ -726,6 +726,8 @@
         const deltaTime = (timestamp - lastTime) / (1000 / 60);
         lastTime = timestamp;
 
+          // FIX: Rabbit R1 Delta-Time-Clamp
+  dt = Math.min(dt, 1/30);
 
         if (gameState === 'playing' && !player.isDead) {
             update(deltaTime);
@@ -750,7 +752,11 @@
         // 1. Gravity and Movement
         const currentGravity = player.isGravityUp ? -gravity : gravity;
         player.velY += currentGravity * dt;
-       
+
+// FIX: Rabbit R1 Max VelY
+const MAX_VEL_Y = 15;
+player.velY = Math.max(-MAX_VEL_Y, Math.min(MAX_VEL_Y, player.velY));
+        
         player.accelX = totalTilt * KEYBOARD_ACCEL_FACTOR;
 
 
@@ -764,6 +770,11 @@
         player.x += player.velX;
         player.y += player.velY * dt;
 
+
+// FIX: Rabbit R1 Spielfeldbegrenzung
+player.x = Math.max(0, Math.min(CANVAS_WIDTH - player.width, player.x));
+player.y = Math.max(HUD_HEIGHT, Math.min(CANVAS_HEIGHT - player.height, player.y));  
+        
 
         // Y Boundary Check (Death zone below game area)
         if (player.y + player.height > CANVAS_HEIGHT) {
