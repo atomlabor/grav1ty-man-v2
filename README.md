@@ -1,5 +1,5 @@
 ![Titelbild](https://github.com/atomlabor/grav1ty-man-v2/blob/main/grav1ty-man-intro.webp)
-
+[![ko-fi](https://ko-fi.com/img/githubbutton_sm.svg)](https://ko-fi.com/E1E51DRUM)
 # grav1ty-man
 Ein innovatives 2D-Plattformspiel für das Rabbit r1-System mit einzigartiger Sensorsteuerung.
 
